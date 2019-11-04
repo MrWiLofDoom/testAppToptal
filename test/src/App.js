@@ -75,15 +75,20 @@ class App extends Component {
 
     };
 
-    updateDB = (idToUpdate, updateToApply) => {
+    updateDB = () => {
+        const { updateToApply } = this.state;
+        const updateId = parseInt(this.state.idToUpdate);
+        console.log('updateId:',updateId);
         let objIdToUpdate = null;
-        idToUpdate = parseInt(idToUpdate);
-        this.state.data.forEach((dat) => {
-            if (dat.id === idToUpdate) {
-                objIdToUpdate = dat._id;
+        this.state.data.forEach((review) => {
+            console.log('review:',review);
+            if (review.id === updateId) {
+                console.log('=== set objIdToUpdate');
+                objIdToUpdate = review._id;
             }
         });
-        this.props.actions.updateData(objIdToUpdate);
+        console.log('*** objIdToUpdate:',objIdToUpdate);
+        this.props.actions.updateData(updateToApply, objIdToUpdate,  updateId);
     };
 
     onChangeDelete =(e)=>{
@@ -97,6 +102,16 @@ class App extends Component {
         if (message.length > 3) {
             this.setState({message: message});
         }
+    }
+
+    onChangeUpdateId = (e) => {
+        console.log('onChangeUpdateId:',e.target.value);
+        this.setState({ idToUpdate: e.target.value });
+    }
+
+    onChangeUpdateMsg = (e) => {
+        console.log('onChangeUpdateMsg:',e.target.value);
+        this.setState({ updateToApply: e.target.value });
     }
 
     render() {
@@ -113,7 +128,7 @@ class App extends Component {
 
                                     return (
                                         <li style={{ padding: '10px' }} key={index}>
-                                            <span style={{ color: 'gray' }}> id: </span> {reviewObj.id} <br />
+                                            <span style={{ color: 'gray' }}> id: </span> {reviewObj.id}
                                             <span style={{ color: 'gray' }}> review: </span>
                                             {reviewObj.review}
                                         </li>
@@ -147,18 +162,18 @@ class App extends Component {
                             <input
                                 type="text"
                                 style={{ width: '200px' }}
-                                onChange={(e) => this.setState({ idToUpdate: e.target.value })}
+                                onChange={(e) => this.onChangeUpdateId(e)}
                                 placeholder="id of item to update here"
                             />
                             <input
                                 type="text"
                                 style={{ width: '200px' }}
-                                onChange={(e) => this.setState({ updateToApply: e.target.value })}
+                                onChange={(e) => this.onChangeUpdateMsg(e)}
                                 placeholder="put new value of the item here"
                             />
                             <Button variant="contained" color="primary"
                                 onClick={() =>
-                                    this.updateDB(this.state.idToUpdate, this.state.updateToApply)
+                                    this.updateDB()
                                 }
                             >
                                 UPDATE

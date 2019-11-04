@@ -4,7 +4,6 @@ var cors = require('cors');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
 const Data = require('./data');
-const serverHelper = require('./serverHelper')
 
 const API_PORT = 3001;
 const app = express();
@@ -40,54 +39,45 @@ app.use(logger('dev'));
 // get all reviews
 router.get('/data', (req, res) => {
     Data.find((err, data) => {
-        if (err) return res.json({ success: false, error: err });
-        return res.json({ success: true, response: data });
+        if (err) return res.status(404).json({ success: false, error: err });
+        return res.json({ success: true, reviews: data });
     });
 });
 
-// create new review
+// update review
 router.post('/data/:review_id', (req, res) => {
-    const { id, update } = req.body;
+    const update = {
+        id: req.body.review.id,
+        review: req.body.review.update
+    };
+    const id = req.params.review_id;
     Data.findByIdAndUpdate(id, update, (err) => {
-        if (err) return res.json({ success: false, error: err });
+        if (err) return res.status(404).json({ success: false, error: err });
         Data.find((err, data) => {
-            if (err) return res.json({ success: false, error: err });
-            return res.json({ success: true, response: data });
+            if (err) return res.status(404).json({ success: false, error: err });
+            return res.json({ success: true, reviews: data });
         });
     });
 });
 
-// update existing method
-router.put('/data', (req, res) => {
-    console.log('*****************');
-    console.log('    put:',req.body);
-    console.log('*****************');
-    
+// create existing review
+router.put('/data/:review_id', (req, res) => {
+    const id = req.params.review_id;
     let data = new Data();
-    const {id, review} = req.body;
-    console.log('id:',id);
-    console.log('review:',review);
+    const {review} = req.body;
     if ((!id && id !== 0) || !review) {
-        return res.json({
+        return res.status(404).json({
             success: false,
             error: 'INVALID INPUTS',
         });
     }
     data.review = review;
     data.id = id;
-
-    console.log('data:',data);
-
+    // save new entry
     data.save((err) => {
-        console.log('data save **********');
-        console.log('err:',err);
-        if (err) return res.json({ success: false, error: err });
-        console.log('successful, also return the list');
-        // let response = serverHelper.returnData();
-        // console.log('response:',response);
+        if (err) return res.status(404).json({  message: 'Review Not found', success: false, error: err });
         Data.find((err, data) => {
-            console.log(' get all teh data: ',data);
-            if (err) return res.json({ success: false, error: err });
+            if (err) return res.status(404).json({  message: 'Reviews Not found', success: false, error: err });
             return res.json({ success: true, reviews: data });
         });
     });
@@ -96,21 +86,12 @@ router.put('/data', (req, res) => {
 // delete review
 router.delete('/data/:review_id', (req, res) => {
     const id = req.params.review_id;
-    console.log('****************************');
-    console.log('      req.params:',req.params.review_id);
-    console.log('      deleteData:',id);
-    console.log('****************************');
-    Data.findOneAndUpdate(
-        { _id: id, useFindAndModify: false},
-        { deleted_at: new Date() }
-    ).then(async function(response){
-        if(response){
-            //, response: serverHelper.returnData(response) }
-            return res.status(200).json({ message: 'Review deleted successfully', success: true});
-        }
-        else{
-            return res.status(404).json({ errors: { message: 'Review Not found' }, success: false });
-        }
+    Data.findByIdAndRemove( id, (err) => {
+        if(err) return res.status(404).json({ errors: { message: 'Review Not found' }, success: false });
+        Data.find((err, data) => {
+            if (err) return res.status(404).json({ errors: { message: 'Reviews Not found' }, success: false, error: err });
+            return res.json({ success: true, reviews: data });
+        });
     });
 });
 

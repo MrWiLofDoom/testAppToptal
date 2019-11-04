@@ -9,9 +9,11 @@ export const fetchData = (payload) => ({
     type: FETCH_DATA
 });
 
-export const updateData = (payload) => ({
+export const updateData = (update, id, updateId) => ({
     type: UPDATE_DATA,
-    payload
+    _id: id,
+    id: updateId,
+    update: update
 });
 
 export const deleteData = (payload) => ({

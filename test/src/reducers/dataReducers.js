@@ -13,11 +13,6 @@ import {
     ADD_DATA
 } from '../actions/types';
 
-// import _ from 'lodash';
-
-import apiHelper from '../api/apiHelper.js';
-
-
 const initialState = {
     authenticated: true,
     isEditor: true,
@@ -32,7 +27,7 @@ export default function dataReducer (state = initialState, action){
             newState = Object.assign({}, state, {hasError: true});
             return newState;
         case FETCH_DATA_RECEIVED:
-            newState = Object.assign({}, state, {hasError: false, data: apiHelper.formatResponse(action.response.data)});
+            newState = Object.assign({}, state, {hasError: false, data: action.response.data.reviews});
             return newState;
         case FETCH_DATA:
             newState = Object.assign({}, state, {hasError: false});
@@ -41,7 +36,7 @@ export default function dataReducer (state = initialState, action){
             newState = Object.assign({}, state, {hasError: true});
             return newState;
         case UPDATE_DATA_RECEIVED:
-            newState = Object.assign({}, state, {hasError: false, data: action.response.data});
+            newState = Object.assign({}, state, {hasError: false, data: action.response.data.reviews});
             return newState;
         case UPDATE_DATA:
             newState = Object.assign({}, state, {hasError: false});
@@ -51,7 +46,7 @@ export default function dataReducer (state = initialState, action){
             return newState;
         case DELETE_DATA_RECEIVED:
             console.log('delete data received:',action.response.data);
-            newState = Object.assign({}, state, {hasError: false, data: action.response.data});
+            newState = Object.assign({}, state, {hasError: false, data: action.response.data.reviews});
             return newState;
         case DELETE_DATA:
             newState = Object.assign({}, state, {hasError: false});

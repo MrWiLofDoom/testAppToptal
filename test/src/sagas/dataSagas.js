@@ -39,6 +39,7 @@ function* addData(action){
 
 function* updateData(action){
     try {
+        console.log('****** updateData:',action);
         const response = yield call(apiHelper.updateDataApi, action);
         yield put({ type: UPDATE_DATA_RECEIVED, response });
     }

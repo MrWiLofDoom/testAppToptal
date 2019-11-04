@@ -11,25 +11,18 @@ const apiHelper = {
         });
     },
     addDataApi: (data) => {
-        console.log('addDataApi!!!');
-        console.log('data:',data);
-        const url = api.api_path + api.data_path;
-        return axios.put(url, {review: data.review, id: data.id});
+        const url = api.api_path + api.data_path + '/' + data.id;
+        return axios.put(url, {review: data.review});
     },
     updateDataApi: data => {
-        const { payload } = data;
-        const url = api.api_path + api.data_path;
-        return axios.post(url, payload);
+        console.log('updateDataApi data:',data);
+        const url = api.api_path + api.data_path +'/' + data._id;
+        return axios.post(url, {review: data, id: data.id});
     },
     deleteDataApi: data => {
         const { payload } = data;
-        console.log('data:',data);
-        console.log('payload:',payload);
         const url = api.api_path + api.data_path  + '/' + payload;
         return axios.delete(url, payload);
-    },
-    formatResponse: data => {
-        return data.response;
     }
 };
 
