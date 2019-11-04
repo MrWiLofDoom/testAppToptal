@@ -17,7 +17,7 @@ const apiHelper = {
     updateDataApi: data => {
         console.log('updateDataApi data:',data);
         const url = api.api_path + api.data_path +'/' + data._id;
-        return axios.post(url, {review: data, id: data.id});
+        return axios.post(url, {review: data, id: data.id, restaurant_name: data.updateTitle});
     },
     deleteDataApi: data => {
         const { payload } = data;

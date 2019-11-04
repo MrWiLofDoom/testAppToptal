@@ -6,6 +6,7 @@ const Schema = mongoose.Schema;
 const DataSchema = new Schema(
     {
         id: Number,
+        restaurant_name: String,
         review: String
     },
     { timestamps: true }

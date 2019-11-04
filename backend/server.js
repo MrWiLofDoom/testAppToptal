@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const express = require('express');
-var cors = require('cors');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
 const Data = require('./data');
@@ -48,7 +48,8 @@ router.get('/data', (req, res) => {
 router.post('/data/:review_id', (req, res) => {
     const update = {
         id: req.body.review.id,
-        review: req.body.review.update
+        review: req.body.review.update,
+        restaurant_name: req.body.restaurant_name
     };
     const id = req.params.review_id;
     Data.findByIdAndUpdate(id, update, (err) => {
