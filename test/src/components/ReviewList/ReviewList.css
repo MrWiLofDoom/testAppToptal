@@ -1,0 +1,13 @@
+.review-item {
+    color: blue;
+    width: 80%;
+    list-style: none;
+    border: 1px solid white;
+}
+
+.review-item .review-item-meta {
+    display: flex;
+    width: auto;
+    flex-direction: column;
+    color: white;
+}

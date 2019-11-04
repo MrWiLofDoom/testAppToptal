@@ -7,7 +7,8 @@ const DataSchema = new Schema(
     {
         id: Number,
         restaurant_name: String,
-        review: String
+        review: String,
+        rank: Number
     },
     { timestamps: true }
 );

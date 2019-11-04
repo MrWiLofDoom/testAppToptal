@@ -22,8 +22,10 @@ export const deleteData = (payload) => ({
     payload
 });
 
-export const addData = (review, id) => ({
+export const addData = (name, review, rank, id) => ({
     type: ADD_DATA,
     id: id,
-    review: review
+    review: review,
+    name: name,
+    rank: rank
 });

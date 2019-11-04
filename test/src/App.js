@@ -2,11 +2,14 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import Button from '@material-ui/core/Button';
+import AddCircleOutline from '@material-ui/icons/AddCircleOutline';
 
 import { fetchData, deleteData, updateData, addData } from './actions/dataActions';
 
 import _ from 'lodash';
+
+import ReviewList from './components/ReviewList/ReviewList';
+import AddNew from './components/AddNew/AddNew';
 
 import './App.css';
 
@@ -20,7 +23,8 @@ class App extends Component {
         idToDelete: null,
         idToUpdate: null,
         updateReview: null,
-        updateName: null
+        updateName: null,
+        showAddNew: false
     }
 
     componentDidMount() {
@@ -44,9 +48,9 @@ class App extends Component {
         this.props.actions.fetchData();
     };
 
-    addToDB = () => {
-        const { review } = this.state;
+    addToDB = (name, review, rank) => {
 
+        console.log('addToDB');
         let currentIds = this.state.data.map((data) => data.id);
         let idToBeAdded = 0;
         while (currentIds.includes(idToBeAdded)) {
@@ -54,7 +58,8 @@ class App extends Component {
         }
 
         if(review !== '' || review.length > 3) {
-            this.props.actions.addData(review, idToBeAdded);
+            this.props.actions.addData(name, review, rank, idToBeAdded);
+            this.setState({showAddNew:false});
         } else {
             console.error('You need to have 3 characters at least in a review.')
         }
@@ -99,20 +104,6 @@ class App extends Component {
         this.setState({ idToDelete: changeId });
     }
 
-    onChangeAdd = (e) => {
-        let review = e.target.value;
-        if (review.length > 3) {
-            this.setState({review: review});
-        }
-    }
-
-    onChangeAddTitle = (e) => {
-        let reviewTitle = e.target.value;
-        if (reviewTitle.length > 3) {
-            this.setState({review: reviewTitle});
-        }
-    }
-
     onChangeUpdateId = (e) => {
         console.log('onChangeUpdateId:',e.target.value);
         this.setState({ idToUpdate: e.target.value });
@@ -128,85 +119,33 @@ class App extends Component {
         this.setState({ updateName: e.target.value });
     }
 
-    render() {
+    toggleAddNew = (e) => {
+        this.setState({showAddNew: !this.state.showAddNew});
+    }
+
+    renderAddNew = () => {
+        return (
+            <AddNew submit={this.addToDB}></AddNew>
+        )
+    }
+
+    renderReviewList = () => {
         const { data } = this.state;
+        return (<ReviewList data={data}></ReviewList>);
+    }
+
+    render() {
+        const { showAddNew } = this.state;
         return (
             <div className='App'>
                 <header className='App-header'>
                     <h1>Welcome to Restaurant-O!</h1>
                     <div>
-                        <ul>
-                            {data.length <= 0
-                                ? 'NO REVIEWS YET'
-                                : data.map((reviewObj, index) => {
-
-                                    return (
-                                        <li style={{ padding: '10px' }} key={index}>
-                                            <span style={{ color: 'gray' }}> id: </span> {reviewObj.id}
-                                            <span style={{ color: 'gray' }}> restaurant: </span> {reviewObj.restaurant_name}
-                                            <span style={{ color: 'gray' }}> review: </span>
-                                            {reviewObj.review}
-                                        </li>
-                                    )
-                                })
-                            }
-                        </ul>
-                        <div style={{ padding: '10px' }}>
-                            <input
-                                type="text"
-                                onChange={(e) => this.onChangeAddTitle(e) }
-                                placeholder="restaurant title"
-                                style={{ width: '200px' }}
-                            />
-
-                            <input
-                                type="text"
-                                onChange={(e) => this.onChangeAdd(e) }
-                                placeholder="add something in the database"
-                                style={{ width: '200px' }}
-                            />
-                            <Button variant="contained" color="primary" onClick={() => this.addToDB()}>
-                                ADD
-                            </Button>
-                        </div>
-                        <div style={{ padding: '10px' }}>
-                            <input
-                                type="text"
-                                style={{ width: '200px' }}
-                                onChange={(e) => this.onChangeDelete(e) }
-                                placeholder="put id of item to delete here"
-                            />
-                            <Button variant="contained" color="primary" onClick={() => this.deleteFromDB(this.state.idToDelete)}>
-                                DELETE
-                            </Button>
-                        </div>
-                        <div style={{ padding: '10px' }}>
-                            <input
-                                type="text"
-                                style={{ width: '200px' }}
-                                onChange={(e) => this.onChangeUpdateId(e)}
-                                placeholder="id of item to update here"
-                            />
-                            <input
-                                type="text"
-                                style={{ width: '200px' }}
-                                onChange={(e) => this.onChangeUpdateRestaurant(e)}
-                                placeholder="put new value of restaurant name here"
-                            />
-                            <input
-                                type="text"
-                                style={{ width: '200px' }}
-                                onChange={(e) => this.onChangeUpdateMsg(e)}
-                                placeholder="put new value of the item here"
-                            />
-                            <Button variant="contained" color="primary"
-                                onClick={() =>
-                                    this.updateDB()
-                                }
-                            >
-                                UPDATE
-                            </Button>
-                        </div>
+                        { !showAddNew &&
+                            <AddCircleOutline onClick={ (e) => this.toggleAddNew(e) } />
+                        }
+                        { showAddNew && this.renderAddNew() }
+                        { this.renderReviewList() }
                     </div>
                 </header>
             </div>

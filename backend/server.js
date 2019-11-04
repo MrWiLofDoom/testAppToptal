@@ -49,7 +49,8 @@ router.post('/data/:review_id', (req, res) => {
     const update = {
         id: req.body.review.id,
         review: req.body.review.update,
-        restaurant_name: req.body.restaurant_name
+        restaurant_name: req.body.restaurant_name,
+        rank: req.body.rank
     };
     const id = req.params.review_id;
     Data.findByIdAndUpdate(id, update, (err) => {
@@ -65,7 +66,8 @@ router.post('/data/:review_id', (req, res) => {
 router.put('/data/:review_id', (req, res) => {
     const id = req.params.review_id;
     let data = new Data();
-    const {review} = req.body;
+    console.log('req.body:',req.body);
+    const {review, name, rank} = req.body;
     if ((!id && id !== 0) || !review) {
         return res.status(404).json({
             success: false,
@@ -73,6 +75,8 @@ router.put('/data/:review_id', (req, res) => {
         });
     }
     data.review = review;
+    data.rank = rank;
+    data.restaurant_name = name;
     data.id = id;
     // save new entry
     data.save((err) => {

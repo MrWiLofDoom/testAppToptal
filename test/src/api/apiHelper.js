@@ -12,7 +12,7 @@ const apiHelper = {
     },
     addDataApi: (data) => {
         const url = api.api_path + api.data_path + '/' + data.id;
-        return axios.put(url, {review: data.review});
+        return axios.put(url, {name: data.name, review: data.review, rank: data.rank});
     },
     updateDataApi: data => {
         console.log('updateDataApi data:',data);
