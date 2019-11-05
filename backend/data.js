@@ -12,7 +12,8 @@ const DataSchema = new Schema(
         rank: {
             price: Number,
             speed: Number,
-            quality: Number
+            quality: Number,
+            rating: Number
         }
     },
     { timestamps: true }

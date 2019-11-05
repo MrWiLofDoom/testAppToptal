@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { AttachMoney, AccessAlarm, Fastfood } from '@material-ui/icons';
 import PropTypes from 'prop-types';
+import ReviewListItem from '../ReviewListItem/ReviewListItem';
+// styles
 import './ReviewList.css';
 
 const FILTER_PRICE = 'price';
 const FILTER_QUALITY = 'quality';
 const FILTER_SPEED = 'speed';
+
 
 class ReviewList extends Component {
 
@@ -13,23 +16,10 @@ class ReviewList extends Component {
         filter: FILTER_PRICE
     }
 
-    getReviewColor = (rank) => {
-        console.log('getReviewColor:',rank);
-        let color;
-        if (rank > -1 && rank <= 2) {
-            color = 'bad';
-        } else if (rank > 2 && rank < 4) {
-            color = 'ok';
-        } else {
-            color = 'good';
-        }
-        console.log('color:',color);
-        return color;
-    }
-
-    changeFilter = (e) => {
-        console.log('changeFilter:',e.target.name);
-        this.setState({filter:e.target.name});
+    changeFilter = (filter) => {
+        console.log('*************************');
+        console.log('  changeFilter:',filter);
+        this.setState({filter: filter});
     }
 
     getFilterActiveClass = (name) => {
@@ -41,41 +31,30 @@ class ReviewList extends Component {
     }
 
     renderContent = (reviewObj, index) => {
-        const { price, quality, speed } = reviewObj.rank;
+        const { price, quality, speed, rating } = reviewObj.rank;
         return (
-            <li className={'review-item'} key={index}>
-                <div className={'review-item-meta'}>
-                    <div className={'review-item-meta-restaurant-name'}>{reviewObj.restaurant_name}</div>
-                    <div className={'review-item-meta-review'}>{reviewObj.review}</div>
-                </div>
-                <div className={'review-container'}>
-                    <div className={'review-icon-holder ' + this.getReviewColor(price)}>
-                        <div className={'review-icon'}><AttachMoney className={'attach-money-icon'}/></div>
-                        <div className={'review-icon-value'}>{price}</div>
-                    </div>
-                    <div className={'review-icon-holder ' + this.getReviewColor(quality)}>
-                        <div className={'review-icon'}><Fastfood className={'fastfood-icon'}/></div>
-                        <div className={'review-icon-value'}>{quality}</div>
-                    </div>
-                    <div className={'review-icon-holder ' + this.getReviewColor(speed)}>
-                        <div className={'review-icon'}><AccessAlarm className={'access-alarm-icon'}/></div>
-                        <div className={'review-icon-value'}>{speed}</div>
-                    </div>
-                </div>
-            </li>
+            <ReviewListItem
+                key={'review-list-item-'+index}
+                index={index}
+                reviewObj={reviewObj}
+                price={price}
+                quality={quality}
+                speed={speed}
+                rating={rating}
+            ></ReviewListItem>
         );
     };
 
     renderFilters = () => {
         return (<div id={'result-filters-container'}>
             <div className={this.getFilterActiveClass(FILTER_PRICE)}>
-                <AttachMoney name={FILTER_PRICE} onClick={(e)=>this.changeFilter(e)}/>
+                <AttachMoney name={FILTER_PRICE} onClick={(e)=>this.changeFilter(FILTER_PRICE)}/>
             </div>
             <div className={this.getFilterActiveClass(FILTER_QUALITY)}>
-                <Fastfood name={FILTER_QUALITY} onClick={(e)=>this.changeFilter(e)}/>
+                <Fastfood name={FILTER_QUALITY} onClick={(e)=>this.changeFilter(FILTER_QUALITY)}/>
             </div>
             <div className={this.getFilterActiveClass(FILTER_SPEED)}>
-                <AccessAlarm name={FILTER_SPEED} onClick={(e)=>this.changeFilter(e)}/>
+                <AccessAlarm name={FILTER_SPEED} onClick={(e)=>this.changeFilter(FILTER_SPEED)}/>
             </div>
         </div>)
     }

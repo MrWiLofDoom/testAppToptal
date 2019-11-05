@@ -3,7 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
-const
+
 const Data = require('./data');
 
 
@@ -14,7 +14,7 @@ const router = express.Router();
 
 // this is the mondoDB
 // this is our MongoDB database
-const dbRoute = module.exports.mongoURI;
+const dbRoute = require('./config/keys').mongoURI;
 
 
 mongoose.set('useFindAndModify', false);

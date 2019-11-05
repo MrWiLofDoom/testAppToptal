@@ -46,7 +46,8 @@ class AddNew extends Component {
         const rank = {
             price: price,
             quality: quality,
-            speed: speed
+            speed: speed,
+            rating: (price+quality+speed)/3
         }
         this.props.submit(restaurantName, review, rank);
     };

@@ -90,37 +90,30 @@ class App extends Component {
     updateDB = () => {
         const { updateReview, updateName } = this.state;
         const updateId = parseInt(this.state.idToUpdate);
-        console.log('updateId:',updateId);
+
         let objIdToUpdate = null;
         this.state.data.forEach((review) => {
-            console.log('review:',review);
             if (review.id === updateId) {
-                console.log('=== set objIdToUpdate');
                 objIdToUpdate = review._id;
             }
         });
-        console.log('*** objIdToUpdate:',objIdToUpdate);
         this.props.actions.updateData(updateReview, updateName, objIdToUpdate, updateId);
     };
 
     onChangeDelete =(e)=>{
         let changeId = e.target.value;
-        console.log('changeId:',changeId);
         this.setState({ idToDelete: changeId });
     }
 
     onChangeUpdateId = (e) => {
-        console.log('onChangeUpdateId:',e.target.value);
         this.setState({ idToUpdate: e.target.value });
     }
 
     onChangeUpdateMsg = (e) => {
-        console.log('onChangeUpdateMsg:',e.target.value);
         this.setState({ updateReview: e.target.value });
     }
 
     onChangeUpdateRestaurant = (e) => {
-        console.log('onChangeUpdateMsg:',e.target.value);
         this.setState({ updateName: e.target.value });
     }
 

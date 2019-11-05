@@ -8,10 +8,15 @@
     margin-right: 10px;
 }
 
-#result-filters-container svg {
+#result-filters-container .filter-icon svg {
     font-size: 18px;
     padding: 0 5px;
     cursor: pointer;
+    color: #666666;
+}
+
+#result-filters-container .filter-icon.active svg {
+    color: blue;
 }
 
 .review-list-ul {
@@ -41,23 +46,45 @@
     display: flex;
     flex-direction: column;
     color: black;
-    width: 65%;
+    width: 75%;
     min-height: 75px;
 }
 
 .review-item .review-item-meta .review-item-meta-restaurant-name,
-.review-item .review-item-meta .review-item-meta-review {
+.review-item .review-item-meta .review-item-meta-review,
+.review-item .review-item-meta .review-item-meta-review-date {
     text-align: left;
     color: black;
+    width: 100%;
 }
 
 .review-item .review-item-meta .review-item-meta-restaurant-name {
     font-weight: bold;
+    flex: 1 0 0;
+}
+
+.review-item .review-item-meta .review-item-meta-review {
+    flex: 2 0 0;
+}
+
+.review-item .review-item-meta .review-item-meta-review-date {
+    font-size: 11px;
+    color: #333333;
+    font-style: italic;
+    text-align: right;
+    flex: 1 0 0;
 }
 
 .review-container {
     display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.review-container-holder {
+    display: flex;
     flex-direction: row;
+    padding-bottom: 10px
 }
 
 .review-container .review-icon-holder {
@@ -66,7 +93,7 @@
     align-items: center;
     justify-content: center;
     width: 60px;
-    padding: 5px;
+    padding: 2px;
 }
 
 .review-container .review-icon-holder .review-icon-value {
