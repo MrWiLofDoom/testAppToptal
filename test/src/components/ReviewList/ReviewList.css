@@ -1,11 +1,16 @@
 #result-filters-container {
     width: 100%;
-    border: 1px solid red;
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
+    align-items: center;
     margin-top: 10px;
     margin-right: 10px;
+}
+
+#result-filters-container #sort-by {
+    font-size: 12px;
+    color: blue;
 }
 
 #result-filters-container .filter-icon svg {

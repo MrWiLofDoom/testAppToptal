@@ -17,16 +17,11 @@ class ReviewList extends Component {
     }
 
     changeFilter = (filter) => {
-        console.log('*************************');
-        console.log('  changeFilter:',filter);
         this.setState({filter: filter});
     }
 
     getFilterActiveClass = (name) => {
-        console.log('getFilterActiveClass:',name);
-        console.log('this.state.filter:',this.state.filter);
         let activeClass = this.state.filter === name ? ' active' : '';
-        console.log('activeClass:',activeClass);
         return 'filter-icon' + activeClass;
     }
 
@@ -47,6 +42,7 @@ class ReviewList extends Component {
 
     renderFilters = () => {
         return (<div id={'result-filters-container'}>
+            <div id={'sort-by'}>Sort by</div>
             <div className={this.getFilterActiveClass(FILTER_PRICE)}>
                 <AttachMoney name={FILTER_PRICE} onClick={(e)=>this.changeFilter(FILTER_PRICE)}/>
             </div>
