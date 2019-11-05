@@ -1,13 +1,69 @@
-.review-item {
-    color: blue;
-    width: 500px;
-    list-style: none;
-    border: 1px solid white;
+#add-new-container {
+    padding: 10px;
+    border-radius: 10px;
+    background-color: lightgray;
 }
 
-.review-item .review-item-meta {
-    display: flex;
-    width: auto;
-    flex-direction: column;
-    color: yellow;
+#add-new-container h2 {
+    font-size: 16px;
+    color: black;
+    text-align: left;
 }
+#add-new-container #add-new-header {
+    display: flex;
+    flex-direction: row;
+    width: auto;
+    height: 20px;
+    justify-items: stretch;
+    align-items: center;
+}
+
+#add-new-container #add-new-header h2{
+    flex: 2 0 0;
+}
+
+#add-new-container #add-new-header .cancel-button{
+    cursor: pointer;
+    width: 20px;
+}
+
+.rating-container {
+    display: flex;
+    flex-direction: row;
+    font-size: 12px;
+    justify-content: center;
+    align-content: center;
+    padding: 5px;
+    width: auto;
+}
+
+.rating-container .rating-label {
+    padding-right: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-items: left;
+    align-content: center;
+}
+
+.rating-container .rating-text-field {
+    width: 100%;
+}
+
+.rating-container .rating-text-field .MuiInput-underline:before,
+.rating-container .rating-review-field .MuiInput-underline:before {
+    border-bottom: 1px solid black;
+}
+.rating-container .rating-text-field:hover .MuiInput-underline:before,
+.rating-container .rating-review-field:hover .MuiInput-underline:before {
+     border-bottom: 2px solid black;
+ }
+
+.rating-container .rating-text-field label,
+.rating-container .rating-review-field label {
+    color: black;
+}
+.rating-container .rating-text-field,
+.rating-container .rating-review-field{
+    width: 100%;
+}
+

@@ -11,14 +11,56 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
-  justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: black;
+}
+
+.main-grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 750px;
+}
+
+.main-grid h1 {
+  font-size: 24px;
+  color: blue;
+}
+
+.main-grid .main-grid-container {
+  width: 100%;
+  padding: 10px;
+}
+
+.main-grid .main-grid-container #add-review-container {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: flex-end;
+  color: blue;
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 24px;
+  cursor: pointer;
+}
+
+.main-grid .main-grid-container #add-review-container svg {
+  padding-left: 5px;
 }
 
 .App-link {
   color: #09d3ac;
+}
+
+.MuiPaper-root {
+  border-radius: 10px;
+  padding: 10px
+}
+
+body {
+  color: black;
 }
 
 li {

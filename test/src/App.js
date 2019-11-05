@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import AddCircleOutline from '@material-ui/icons/AddCircleOutline';
+import {AddCircleOutline} from '@material-ui/icons';
+import { Paper, Grid } from '@material-ui/core';
 
 import { fetchData, deleteData, updateData, addData } from './actions/dataActions';
 
@@ -24,7 +25,8 @@ class App extends Component {
         idToUpdate: null,
         updateReview: null,
         updateName: null,
-        showAddNew: false
+        showAddNew: true,
+        showReviewList: true
     }
 
     componentDidMount() {
@@ -39,7 +41,10 @@ class App extends Component {
         console.log('shouldComponentUpdate')
         if(!_.isEqual(this.props.DataStore, nextProps.DataStore)){
             console.log('nextProps.DataStore:',nextProps.DataStore);
-            this.setState({data: nextProps.DataStore.data});
+            this.setState({
+                data: nextProps.DataStore.data,
+                showAddNew: nextProps.DataStore.data.length === 0
+            });
         }
         return true;
     }
@@ -123,9 +128,17 @@ class App extends Component {
         this.setState({showAddNew: !this.state.showAddNew});
     }
 
+    cancelAddNew = (e) => {
+        this.setState({showAddNew: false});
+    }
+
     renderAddNew = () => {
         return (
-            <AddNew submit={this.addToDB}></AddNew>
+            <AddNew
+                submit={this.addToDB}
+                cancel={this.cancelAddNew}
+            >
+            </AddNew>
         )
     }
 
@@ -135,18 +148,25 @@ class App extends Component {
     }
 
     render() {
-        const { showAddNew } = this.state;
+        const { showAddNew, showReviewList } = this.state;
         return (
             <div className='App'>
                 <header className='App-header'>
-                    <h1>Welcome to Restaurant-O!</h1>
-                    <div>
-                        { !showAddNew &&
-                            <AddCircleOutline onClick={ (e) => this.toggleAddNew(e) } />
-                        }
-                        { showAddNew && this.renderAddNew() }
-                        { this.renderReviewList() }
-                    </div>
+                    <Grid className={'main-grid'} container spacing={0}>
+                        <Grid className={'main-grid-container'} item xs={8} sm={8} md={8} lg={8}>
+                            <Paper square={true} className="edit-video-left-tab" elevation={0}>
+                                <h1>Welcome to Restaurant-O!</h1>
+                                { !showAddNew &&
+                                    <div id={'add-review-container'}>
+                                        <div>Add a New Review</div>
+                                        <AddCircleOutline onClick={ (e) => this.toggleAddNew(e) } />
+                                    </div>
+                                }
+                                { showAddNew && this.renderAddNew() }
+                                { showReviewList && this.renderReviewList() }
+                            </Paper>
+                        </Grid>
+                    </Grid>
                 </header>
             </div>
         );

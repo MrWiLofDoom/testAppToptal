@@ -6,9 +6,14 @@ const Schema = mongoose.Schema;
 const DataSchema = new Schema(
     {
         id: Number,
+        user_id: String,
         restaurant_name: String,
         review: String,
-        rank: Number
+        rank: {
+            price: Number,
+            speed: Number,
+            quality: Number
+        }
     },
     { timestamps: true }
 );

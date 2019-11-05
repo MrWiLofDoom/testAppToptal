@@ -3,7 +3,9 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
+const
 const Data = require('./data');
+
 
 const API_PORT = 3001;
 const app = express();
@@ -12,8 +14,8 @@ const router = express.Router();
 
 // this is the mondoDB
 // this is our MongoDB database
-const dbRoute =
-    'mongodb+srv://user1:user12019@cluster0-nfapc.mongodb.net/test?retryWrites=true&w=majority';
+const dbRoute = module.exports.mongoURI;
+
 
 mongoose.set('useFindAndModify', false);
 // connects our back end code with the database

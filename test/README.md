@@ -1,3 +1,17 @@
+# TopTal Test Project
+This is a restaurant review app. It allows users to create restaurant reviews and save them to a mongoDB using Node to create RESTful APIs.
+
+The client has been generated using React JS with Material UI.
+
+## Quick start
+
+1. Go to the backend folder and type npm install
+2. Then type node server.js
+3. Go to the test folder and type npm install
+4. Then type npm start
+5. In a Browser, navigate to http://localhost:3000
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

@@ -1,13 +1,92 @@
+#result-filters-container {
+    width: 100%;
+    border: 1px solid red;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: 10px;
+    margin-right: 10px;
+}
+
+#result-filters-container svg {
+    font-size: 18px;
+    padding: 0 5px;
+    cursor: pointer;
+}
+
+.review-list-ul {
+    padding: 0;
+    list-style-type: none;
+    height: auto;
+    margin-bottom: 0;
+    margin-top: 5px;
+}
+
 .review-item {
-    color: blue;
-    width: 80%;
+    width: auto;
+    margin-bottom: 10px;
     list-style: none;
-    border: 1px solid white;
+    display: flex;
+    flex-direction: row;
+    background: #ccc;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.review-item:last-child {
+    margin-bottom: 0;
 }
 
 .review-item .review-item-meta {
     display: flex;
-    width: auto;
     flex-direction: column;
-    color: white;
+    color: black;
+    width: 65%;
+    min-height: 75px;
 }
+
+.review-item .review-item-meta .review-item-meta-restaurant-name,
+.review-item .review-item-meta .review-item-meta-review {
+    text-align: left;
+    color: black;
+}
+
+.review-item .review-item-meta .review-item-meta-restaurant-name {
+    font-weight: bold;
+}
+
+.review-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.review-container .review-icon-holder {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    padding: 5px;
+}
+
+.review-container .review-icon-holder .review-icon-value {
+    font-size: 18px;
+    font-weight: bold;
+    padding-left: 5px;
+}
+
+.review-item .good .review-icon-value,
+.review-item .good .review-icon {
+    color: green;
+}
+
+.review-item .ok .review-icon-value,
+.review-item .ok .review-icon {
+    color: darkorange;
+}
+
+.review-item .bad .review-icon-value,
+.review-item .bad .review-icon {
+    color: darkred;
+}
+
