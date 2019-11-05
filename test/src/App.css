@@ -55,7 +55,6 @@
   flex-direction: row;
   align-items: flex-end;
   justify-content: flex-end;
-  border: 1px solid hotpink;
 }
 
 .main-grid .main-grid-container #add-review-container svg {

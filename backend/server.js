@@ -54,6 +54,9 @@ require("./config/passport")(passport);
 
 // get all  reviews
 router.get('/data/', (req, res) => {
+
+    console.log('db.collections.datas.names:',);
+
     Data.find((err, data) => {
         if (err) return res.status(404).json({success: false, error: err});
         return res.json({success: true, reviews: data});
@@ -61,9 +64,6 @@ router.get('/data/', (req, res) => {
 });
 // get user's reviews
 router.get('/data/user/:user_id', (req, res) => {
-    console.log('**************************');
-    console.log('      get user`s review: ',req.params.user_id);
-    console.log('**************************');
     Data.find({user_id: req.params.user_id},(err, data) => {
         if (err) return res.status(404).json({success: false, error: err});
         return res.json({success: true, reviews: data});

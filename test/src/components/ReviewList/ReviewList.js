@@ -48,7 +48,7 @@ class ReviewList extends Component {
 
     renderSummary = () => {
         return (<div id={'result-filters-container'}>
-            summary
+            <div className={'all-restaurants'}>All Restaurants</div>
         </div>);
     }
 
@@ -69,7 +69,8 @@ class ReviewList extends Component {
 
     render () {
         const {data, type} = this.props;
-        const newData = data.sort((a, b) => (a.rank[this.state.filter] < b.rank[this.state.filter]) ? 1 : ((b.rank[this.state.filter] < a.rank[this.state.filter]) ? -1 : 0));
+        const { filter } = this.state;
+        const newData = data.sort((a, b) => (a.rank[filter] < b.rank[filter]) ? 1 : ((b.rank[filter] < a.rank[filter]) ? -1 : 0));
         const showFilters = type === MY_REVIEWS;
         return (
             <>
@@ -77,7 +78,7 @@ class ReviewList extends Component {
                 { !showFilters && this.renderSummary() }
                 <ul className={'review-list-ul'}>
                     {data.length <= 0
-                        ? 'NO REVIEWS YET'
+                        ? <li className={'no-reviews-yet'}>NO REVIEWS YET</li>
                         : newData.map((reviewObj, index) => {
                             return (
                                 this.renderContent(reviewObj, index)
