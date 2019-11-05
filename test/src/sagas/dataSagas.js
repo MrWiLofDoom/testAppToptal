@@ -16,9 +16,9 @@ import {
     ADD_DATA
 } from '../actions/types';
 
-function* getData(){
+function* getData(action){
     try {
-        const response = yield call(apiHelper.fetchDataApi);
+        const response = yield call(apiHelper.fetchDataApi, action);
         yield put({ type: FETCH_DATA_RECEIVED, response });
     }
     catch (error) {

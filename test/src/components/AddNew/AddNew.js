@@ -8,13 +8,17 @@ import './AddNew.css';
 
 class AddNew extends Component {
 
-    state = {
-        review: null,
-        restaurantName: null,
-        price: 0,
-        quality: 0,
-        speed: 0
-    };
+    constructor(){
+        super();
+        this.state = {
+            review: null,
+            restaurantName: null,
+            price: 0,
+            quality: 0,
+            speed: 0
+        };
+    }
+
 
     onChangeReview = (e) => {
         let review = e.target.value;
@@ -30,15 +34,10 @@ class AddNew extends Component {
         }
     };
 
-    setRank = (e) => {
-        console.log('setRank:', e.target.name);
-        const rank = Number(e.target.value);
-        console.log('rank:', rank);
-
+    setRating = (e) => {
         if(e.target.name){
             this.setState({[e.target.name]: Number(e.target.value)});
         }
-
     };
 
     submitData = (e) => {
@@ -128,16 +127,16 @@ class AddNew extends Component {
                 </div>
                 <div className={'rating-container'}>
                     <div className={'rating-label'}>Price:</div>
-                    <Rating size={'small'} name='price' value={price} precision={0.5} onClick={(e) => this.setRank(e)}/>
+                    <Rating size={'small'} name='price' value={price} precision={0.5} onClick={(e) => this.setRating(e)}/>
                 </div>
                 <div className={'rating-container'}>
                     <div className={'rating-label'}>Speed:</div>
-                    <Rating size={'small'} name='speed' value={speed} precision={0.5} onClick={(e) => this.setRank(e)}/>
+                    <Rating size={'small'} name='speed' value={speed} precision={0.5} onClick={(e) => this.setRating(e)}/>
                 </div>
                 <div className={'rating-container'}>
                     <div className={'rating-label'}>Quality:</div>
                     <Rating size={'small'} name='quality' value={quality} precision={0.5}
-                            onClick={(e) => this.setRank(e)}/>
+                            onClick={(e) => this.setRating(e)}/>
                 </div>
                 <div className={'rating-container'}>
                     <Button variant='contained' color='primary' onClick={() => this.submitData()}>

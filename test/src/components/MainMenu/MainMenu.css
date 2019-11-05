@@ -1,0 +1,13 @@
+#main-menu-holder .main-menu-button {
+    min-width: 20px;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-items: center;
+    align-content: center;
+}
+
+#main-menu-holder  .main-menu-button .main-menu-icon {
+    color: blue;
+}
+

@@ -52,16 +52,26 @@ app.use(passport.initialize());
 // Passport config
 require("./config/passport")(passport);
 
-// get all reviews
-router.get('/data', (req, res) => {
+// get all  reviews
+router.get('/data/', (req, res) => {
     Data.find((err, data) => {
+        if (err) return res.status(404).json({success: false, error: err});
+        return res.json({success: true, reviews: data});
+    });
+});
+// get user's reviews
+router.get('/data/user/:user_id', (req, res) => {
+    console.log('**************************');
+    console.log('      get user`s review: ',req.params.user_id);
+    console.log('**************************');
+    Data.find({user_id: req.params.user_id},(err, data) => {
         if (err) return res.status(404).json({success: false, error: err});
         return res.json({success: true, reviews: data});
     });
 });
 
 // update review
-router.post('/data/:review_id', (req, res) => {
+router.post('/data/user/:user_id/:review_id', (req, res) => {
     const update = {
         id: req.body.review.id,
         review: req.body.review.update,
@@ -78,8 +88,8 @@ router.post('/data/:review_id', (req, res) => {
     });
 });
 
-// create existing review
-router.put('/data/:review_id', (req, res) => {
+// create new review
+router.put('/data/user/:user_id/:review_id', (req, res) => {
     const id = req.params.review_id;
     let data = new Data();
     console.log('req.body:', req.body);
@@ -94,6 +104,7 @@ router.put('/data/:review_id', (req, res) => {
     data.rank = rank;
     data.restaurant_name = name;
     data.id = id;
+    data.user_id = req.params.user_id;
     // save new entry
     data.save((err) => {
         if (err) return res.status(404).json({message: 'Review Not found', success: false, error: err});
@@ -189,7 +200,9 @@ router.post('/users/login', (req, res) => {
                     (err, token) => {
                         res.json({
                             success: true,
-                            token: 'Bearer ' + token
+                            token: 'Bearer ' + token,
+                            isEditor: user.admin,
+                            userId: user.id
                         });
                     }
                 );

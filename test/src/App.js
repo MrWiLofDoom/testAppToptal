@@ -5,32 +5,58 @@ import { connect } from 'react-redux';
 import {AddCircleOutline} from '@material-ui/icons';
 import { Paper, Grid } from '@material-ui/core';
 
-import { fetchData, deleteData, updateData, addData } from './actions/dataActions';
+import {
+    fetchData,
+    deleteData,
+    updateData,
+    addData
+} from './actions/dataActions';
+
+import {
+    registerUser,
+    loginUser
+} from './actions/usersActions';
+
+import {
+    MY_REVIEWS,
+    ALL_RESTAURANTS
+} from './constants/constants';
 
 import _ from 'lodash';
 
 import ReviewList from './components/ReviewList/ReviewList';
 import AddNew from './components/AddNew/AddNew';
+import LoginForm from './components/LoginForm/LoginForm';
+import MainMenu from './components/MainMenu/MainMenu';
 
 import './App.css';
 
 class App extends Component {
 
-    state = {
-        data: [],
-        id: 0,
-        review: null,
-        reviewTitle: null,
-        idToDelete: null,
-        idToUpdate: null,
-        updateReview: null,
-        updateName: null,
-        showAddNew: true,
-        showReviewList: true
+    constructor(){
+        super();
+        this.state = {
+            data: [],
+            id: 0,
+            review: null,
+            reviewTitle: null,
+            idToDelete: null,
+            idToUpdate: null,
+            updateReview: null,
+            updateName: null,
+            showAddNew: true,
+            showReviewList: true,
+            isLoggedIn: false,
+            listName: ALL_RESTAURANTS
+        }
     }
 
     componentDidMount() {
-        this.getDataFromDb();
+        if(!_.isEmpty(localStorage.getItem('userId'))){
+            this.setState({isLoggedIn:true},()=>{
+                this.getDataFromDb();
+            });
+        }
     }
 
     componentWillUnmount() {
@@ -46,25 +72,60 @@ class App extends Component {
                 showAddNew: nextProps.DataStore.data.length === 0
             });
         }
+        if(!_.isEqual(this.props.UserStore, nextProps.UserStore)){
+            console.log('user store!!!!!');
+            console.log('nextProps.UserStore:',nextProps.UserStore);
+            this.setState({isLoggedIn: nextProps.UserStore.isLoggedIn});
+            // copy userId to local storage
+            localStorage.setItem('userId',nextProps.UserStore.userId);
+            // get data
+            this.getDataFromDb();
+        }
         return true;
     }
 
+    logout = () => {
+        this.setState({isLoggedIn: false},()=>{
+            localStorage.setItem('userId', '');
+        });
+    }
+
+    setType = (type) => {
+        this.setState({listName:type},()=>{
+            // get data
+            this.getDataFromDb();
+        });
+    }
+
     getDataFromDb = () => {
-        this.props.actions.fetchData();
+        console.log('===> getDataFromDb');
+        console.log('this.state.listName:',this.state.listName);
+        if (this.state.listName === MY_REVIEWS){
+            this.setState({listName: MY_REVIEWS},()=>{
+                console.log('localStorage.getItem(\'userId\'):',localStorage.getItem('userId'));
+                this.props.actions.fetchData(localStorage.getItem('userId'));
+            });
+        } else {
+            this.setState({listName: ALL_RESTAURANTS},()=>{
+                this.props.actions.fetchData();
+            });
+        }
     };
 
     addToDB = (name, review, rank) => {
-
         console.log('addToDB');
         let currentIds = this.state.data.map((data) => data.id);
         let idToBeAdded = 0;
+        let userId = localStorage.getItem('userId');
         while (currentIds.includes(idToBeAdded)) {
             ++idToBeAdded;
         }
 
         if(review !== '' || review.length > 3) {
-            this.props.actions.addData(name, review, rank, idToBeAdded);
-            this.setState({showAddNew:false});
+            this.props.actions.addData(name, review, rank, idToBeAdded, userId);
+            this.setState({
+                showAddNew:false,
+            });
         } else {
             console.error('You need to have 3 characters at least in a review.')
         }
@@ -125,6 +186,11 @@ class App extends Component {
         this.setState({showAddNew: false});
     }
 
+    loginUser = (email,password) => {
+        console.log('loginUser:',email,password);
+        this.props.actions.loginUser(email,password);
+    }
+
     renderAddNew = () => {
         return (
             <AddNew
@@ -136,12 +202,17 @@ class App extends Component {
     }
 
     renderReviewList = () => {
-        const { data } = this.state;
-        return (<ReviewList data={data}></ReviewList>);
+        const { data, listName } = this.state;
+        return (<ReviewList type={listName} data={data}></ReviewList>);
+    }
+
+    renderLogin = () => {
+
+        return (<LoginForm loginUser={this.loginUser}></LoginForm>);
     }
 
     render() {
-        const { showAddNew, showReviewList } = this.state;
+        const { showAddNew, showReviewList, isLoggedIn } = this.state;
         return (
             <div className='App'>
                 <header className='App-header'>
@@ -149,14 +220,23 @@ class App extends Component {
                         <Grid className={'main-grid-container'} item xs={8} sm={8} md={8} lg={8}>
                             <Paper square={true} className="edit-video-left-tab" elevation={0}>
                                 <h1>Welcome to Restaurant-O!</h1>
-                                { !showAddNew &&
+                                { isLoggedIn && !showAddNew &&
                                     <div id={'add-review-container'}>
-                                        <div>Add a New Review</div>
-                                        <AddCircleOutline onClick={ (e) => this.toggleAddNew(e) } />
+                                        <div id={'main-menu-holder'}>
+                                            <MainMenu
+                                                logout={this.logout}
+                                                setType={this.setType}
+                                            ></MainMenu>
+                                        </div>
+                                        <div id={'add-review-holder'}>
+                                            <div>Add a New Review</div>
+                                            <AddCircleOutline onClick={ (e) => this.toggleAddNew(e) } />
+                                        </div>
                                     </div>
                                 }
-                                { showAddNew && this.renderAddNew() }
-                                { showReviewList && this.renderReviewList() }
+                                { !isLoggedIn && this.renderLogin()}
+                                { isLoggedIn && showAddNew && this.renderAddNew() }
+                                { isLoggedIn && showReviewList && this.renderReviewList() }
                             </Paper>
                         </Grid>
                     </Grid>
@@ -168,7 +248,8 @@ class App extends Component {
 
 function mapStateToProps (state) {
     return {
-        DataStore: state.DataStore
+        DataStore: state.DataStore,
+        UserStore: state.UserStore
     };
 }
 
@@ -178,7 +259,9 @@ function mapDispatchToProps (dispatch) {
             fetchData,
             updateData,
             deleteData,
-            addData
+            addData,
+            loginUser,
+            registerUser
         }, dispatch)
     };
 }

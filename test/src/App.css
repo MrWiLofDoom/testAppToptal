@@ -46,6 +46,18 @@
   cursor: pointer;
 }
 
+.main-grid .main-grid-container #add-review-container #main-menu-holder {
+  flex: 2 0 0;
+}
+
+.main-grid .main-grid-container #add-review-container #add-review-holder{
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: flex-end;
+  border: 1px solid hotpink;
+}
+
 .main-grid .main-grid-container #add-review-container svg {
   padding-left: 5px;
 }

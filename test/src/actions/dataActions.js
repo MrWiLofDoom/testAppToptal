@@ -5,8 +5,9 @@ import  {
     ADD_DATA
 } from '../actions/types';
 
-export const fetchData = (payload) => ({
-    type: FETCH_DATA
+export const fetchData = (userId) => ({
+    type: FETCH_DATA,
+    userId: userId
 });
 
 export const updateData = (update, updateTitle, id, updateId) => ({
@@ -22,10 +23,11 @@ export const deleteData = (payload) => ({
     payload
 });
 
-export const addData = (name, review, rank, id) => ({
+export const addData = (name, review, rank, id, userId) => ({
     type: ADD_DATA,
     id: id,
     review: review,
     name: name,
-    rank: rank
+    rank: rank,
+    userId: userId
 });

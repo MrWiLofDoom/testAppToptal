@@ -7,7 +7,6 @@ import { Rating } from '@material-ui/lab';
 class ReviewListItem extends Component {
 
     getReviewColor = (rank) => {
-        console.log('getReviewColor:', rank);
         let color;
         if (rank > -1 && rank <= 2) {
             color = 'bad';
@@ -16,13 +15,11 @@ class ReviewListItem extends Component {
         } else {
             color = 'good';
         }
-        console.log('color:', color);
         return color;
     };
 
     render () {
         const {index, reviewObj, price, quality, speed, rating} = this.props;
-        console.log('this.props:', this.props);
         return (
             <li className={'review-item'} key={index}>
                 <div className={'review-item-meta'}>

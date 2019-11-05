@@ -5,15 +5,21 @@ import ReviewListItem from '../ReviewListItem/ReviewListItem';
 // styles
 import './ReviewList.css';
 
-const FILTER_PRICE = 'price';
-const FILTER_QUALITY = 'quality';
-const FILTER_SPEED = 'speed';
+import {
+    MY_REVIEWS,
+    FILTER_PRICE,
+    FILTER_SPEED,
+    FILTER_QUALITY
+} from '../../constants/constants';
 
 
 class ReviewList extends Component {
 
-    state = {
-        filter: FILTER_PRICE
+    constructor() {
+        super();
+        this.state = {
+            filter: FILTER_PRICE
+        }
     }
 
     changeFilter = (filter) => {
@@ -40,6 +46,12 @@ class ReviewList extends Component {
         );
     };
 
+    renderSummary = () => {
+        return (<div id={'result-filters-container'}>
+            summary
+        </div>);
+    }
+
     renderFilters = () => {
         return (<div id={'result-filters-container'}>
             <div id={'sort-by'}>Sort by</div>
@@ -56,12 +68,13 @@ class ReviewList extends Component {
     }
 
     render () {
-        const {data} = this.props;
+        const {data, type} = this.props;
         const newData = data.sort((a, b) => (a.rank[this.state.filter] < b.rank[this.state.filter]) ? 1 : ((b.rank[this.state.filter] < a.rank[this.state.filter]) ? -1 : 0));
-
+        const showFilters = type === MY_REVIEWS;
         return (
             <>
-                { this.renderFilters() }
+                { showFilters && this.renderFilters() }
+                { !showFilters && this.renderSummary() }
                 <ul className={'review-list-ul'}>
                     {data.length <= 0
                         ? 'NO REVIEWS YET'
@@ -78,11 +91,13 @@ class ReviewList extends Component {
 }
 
 ReviewList.propTypes = {
-    data: PropTypes.array
+    data: PropTypes.array,
+    type: PropTypes.string
 };
 
 ReviewList.defaultProps = {
-    data: []
+    data: [],
+    type: ''
 };
 
 export default ReviewList;

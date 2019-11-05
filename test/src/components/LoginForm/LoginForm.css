@@ -1,0 +1,20 @@
+#login-form {
+    height: 300px;
+    width: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+#login-form .login-textfield {
+    margin: 10px;
+}
+
+#login-form .login-submit {
+    margin: 10px;
+}
+
+.register-user {
+    font-size: 14px;
+    color: blue;
+    cursor: pointer;
+}
