@@ -133,6 +133,7 @@ router.post('/users/register', (req, res) => {
 
     console.log('*********************');
     console.log('   register users');
+    console.log('   req.body:',req.body);
     console.log('*********************');
 
     // Form validation

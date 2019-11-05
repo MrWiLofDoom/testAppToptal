@@ -1,19 +1,22 @@
-#login-form {
+#login-form,
+#registration-form {
     height: 300px;
     width: auto;
     display: flex;
     flex-direction: column;
 }
 
-#login-form .login-textfield {
+#login-form .login-textfield,
+#registration-form .login-textfield {
     margin: 10px;
 }
 
-#login-form .login-submit {
+#login-form .login-submit,
+#registration-form .login-submit {
     margin: 10px;
 }
 
-.register-user {
+.toggle-login {
     font-size: 14px;
     color: blue;
     cursor: pointer;

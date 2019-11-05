@@ -47,7 +47,9 @@ class App extends Component {
             showAddNew: true,
             showReviewList: true,
             isLoggedIn: false,
-            listName: ALL_RESTAURANTS
+            showLogin: true,
+            listName: ALL_RESTAURANTS,
+            email: null
         }
     }
 
@@ -66,7 +68,6 @@ class App extends Component {
     shouldComponentUpdate (nextProps, nextState, nextContext) {
         console.log('shouldComponentUpdate')
         if(!_.isEqual(this.props.DataStore, nextProps.DataStore)){
-            console.log('nextProps.DataStore:',nextProps.DataStore);
             this.setState({
                 data: nextProps.DataStore.data,
                 showAddNew: nextProps.DataStore.data.length === 0
@@ -74,12 +75,21 @@ class App extends Component {
         }
         if(!_.isEqual(this.props.UserStore, nextProps.UserStore)){
             console.log('user store!!!!!');
-            console.log('nextProps.UserStore:',nextProps.UserStore);
-            this.setState({isLoggedIn: nextProps.UserStore.isLoggedIn});
-            // copy userId to local storage
-            localStorage.setItem('userId',nextProps.UserStore.userId);
-            // get data
-            this.getDataFromDb();
+            const isNowLoggedIn = nextProps.UserStore.isLoggedIn;
+            console.log('nextProps.UserStore.isLoggedIn:',isNowLoggedIn);
+            this.setState({isLoggedIn: isNowLoggedIn},()=>{
+                if(isNowLoggedIn) {
+                    // copy userId to local storage
+                    localStorage.setItem('userId', nextProps.UserStore.userId);
+                    // get data
+                    this.getDataFromDb();
+                } else {
+                    console.log('change back to login:',nextProps.email);
+                    this.setState({email: nextProps.email},()=>{
+                        this.changeLogin(true);
+                    });
+                }
+            });
         }
         return true;
     }
@@ -186,9 +196,18 @@ class App extends Component {
         this.setState({showAddNew: false});
     }
 
+    changeLogin = (bool) => {
+        this.setState({showLogin: bool})
+    }
+
     loginUser = (email,password) => {
         console.log('loginUser:',email,password);
         this.props.actions.loginUser(email,password);
+    }
+
+    registerUser = (name,email,password,password2) => {
+        console.log('registerUser:',name,email,password,password2);
+        this.props.actions.registerUser(name, email, password, password2);
     }
 
     renderAddNew = () => {
@@ -207,8 +226,14 @@ class App extends Component {
     }
 
     renderLogin = () => {
-
-        return (<LoginForm loginUser={this.loginUser}></LoginForm>);
+        const { showLogin, email } = this.state;
+        return (<LoginForm
+            loginUser={this.loginUser}
+            registerUser={this.registerUser}
+            changeLogin={this.changeLogin}
+            showLogin={showLogin}
+            email={email}
+        ></LoginForm>);
     }
 
     render() {

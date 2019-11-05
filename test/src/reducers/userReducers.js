@@ -12,7 +12,8 @@ const initialState = {
     isEditor: false,
     hasError: false,
     isLoggedIn: false,
-    userId: ''
+    userId: null,
+    email: null
 }
 
 export default function userReducer (state = initialState, action){
@@ -39,7 +40,17 @@ export default function userReducer (state = initialState, action){
             newState = Object.assign({}, state, {hasError: true, isLoggedIn: false, token: ''});
             return newState;
         case REGISTER_USER_RECEIVED:
-            newState = Object.assign({}, state, {hasError: false, data: action.response.data, isLoggedIn: false, token: ''});
+            let registerResponse = action.response.data;
+            console.log('registerResponse:',registerResponse);
+            let newRegisterData = {
+                hasError: false,
+                isLoggedIn: false,
+                token: null,
+                isEditor: false,
+                userId: null,
+                email: registerResponse.email
+            }
+            newState = Object.assign({}, state, newRegisterData);
             return newState;
         case REGISTER_USER:
             newState = Object.assign({}, state, {hasError: false});

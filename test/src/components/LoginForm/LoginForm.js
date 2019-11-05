@@ -2,15 +2,22 @@ import React, { Component } from 'react';
 import { TextField, Button } from '@material-ui/core';
 import './LoginForm.css';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 
 class LoginForm extends Component {
     constructor () {
         super();
         this.state = {
+            name: null,
             email: null,
-            password: null
+            password: null,
+            password2: null
         };
     }
+
+    handleChangeName = (event) => {
+        this.setState({name: event.target.value});
+    };
 
     handleChangeEmail = (event) => {
         this.setState({email: event.target.value});
@@ -20,18 +27,72 @@ class LoginForm extends Component {
         this.setState({password: event.target.value});
     };
 
+    handleChangePassword2 = (event) => {
+        this.setState({password2: event.target.value});
+    };
+
     handleSubmit = (event) => {
-        //Make a network call somewhere
         event.preventDefault();
-        this.props.loginUser(this.state.email, this.state.password)
+        this.props.loginUser(this.state.email, this.state.password);
     };
 
-    registerUser = (event) => {
+    handleRegisterUser = (event) => {
         event.preventDefault();
+        const { name, email, password, password2 } = this.state;
+        if(_.isEmpty(name) || _.isEmpty(email) || _.isEmpty(password) || _.isEmpty(password2)){
+            console.log('one field is blank');
+            return;
+        } else if(!_.isEqual(password, password2)){
+            console.log('passwords need to match');
+        } else {
+            this.props.registerUser(name,email,password,password2);
+        }
+    };
+
+    changeScreen = (bool) => {
         console.log('registerUser!!');
+        this.props.changeLogin(bool);
     };
 
-    render () {
+    renderRegister = () => {
+        return (
+            <>
+                <form id={'registration-form'} onSubmit={this.handleRegisterUser}>
+                    <TextField
+                        className={'login-textfield'}
+                        color={'primary'}
+                        label={'Your Name'}
+                        onChange={this.handleChangeName}/>
+                    <TextField
+                        className={'login-textfield'}
+                        color={'primary'}
+                        label={'Email'}
+                        onChange={this.handleChangeEmail}/>
+                    <TextField
+                        className={'login-textfield'}
+                        color={'primary'}
+                        label={'Password'}
+                        onChange={this.handleChangePassword}/>
+                    <TextField
+                        className={'login-textfield'}
+                        color={'primary'}
+                        label={'Confirm Password'}
+                        onChange={this.handleChangePassword2}/>
+                    <Button
+                        className={'login-submit'}
+                        variant='contained'
+                        color={'primary'}
+                        type='submit'>
+                        Submit
+                    </Button>
+                </form>
+                <div className={'toggle-login'} onClick={(e) => this.changeScreen(true)}>Go Back to Login</div>
+            </>
+        );
+    }
+
+    renderLogin = () => {
+        const { email } = this.state;
         return (
             <>
                 <form id={'login-form'} onSubmit={this.handleSubmit}>
@@ -39,6 +100,7 @@ class LoginForm extends Component {
                         className={'login-textfield'}
                         color={'primary'}
                         label={'Email'}
+                        defaultValue={email}
                         onChange={this.handleChangeEmail}/>
                     <TextField
                         className={'login-textfield'}
@@ -53,16 +115,33 @@ class LoginForm extends Component {
                         Submit
                     </Button>
                 </form>
-                <div className={'register-user'} onClick={(e) => this.registerUser(e)}>Are you a New User? Register
+                <div className={'toggle-login'} onClick={(e) => this.changeScreen(false)}>Are you a New User? Register
                     here
                 </div>
+            </>
+        );
+    };
+
+    render () {
+        const { showLogin } = this.props;
+        return (
+            <>
+                { showLogin && this.renderLogin()}
+                { !showLogin && this.renderRegister()}
             </>
         );
     }
 }
 
 LoginForm.propTypes = {
-    loginUser: PropTypes.func.isRequired
+    loginUser: PropTypes.func.isRequired,
+    registerUser: PropTypes.func.isRequired,
+    changeLogin: PropTypes.func.isRequired,
+    showLogin: PropTypes.bool
+};
+
+LoginForm.defaultProps = {
+    showLogin: true
 }
 
 export default LoginForm;
