@@ -4,6 +4,8 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import { Rating } from '@material-ui/lab';
 
+import _ from 'lodash';
+
 class ReviewListItem extends Component {
 
     getReviewColor = (rank) => {
@@ -18,10 +20,17 @@ class ReviewListItem extends Component {
         return color;
     };
 
+    handleOpenModal = (object) => {
+        console.log('handleOpenModal:',object);
+        this.props.openModal(object);
+    }
+
     render () {
-        const {index, reviewObj, price, quality, speed, rating} = this.props;
+        const {index, reviewObj, price, quality, speed, rating, total} = this.props;
+        const canOpenModal = _.isFunction(this.props.openModal);
+        const liClassName = 'review-item' + (canOpenModal ? ' show-pointer' : '');
         return (
-            <li className={'review-item'} key={index}>
+            <li className={liClassName} onClick={canOpenModal ? (e)=>this.handleOpenModal(reviewObj) : null} key={index}>
                 <div className={'review-item-meta'}>
                     <div className={'review-item-meta-restaurant-name'}>{reviewObj.restaurant_name}</div>
                     <div className={'review-item-meta-review'}>{reviewObj.review}</div>
@@ -44,8 +53,9 @@ class ReviewListItem extends Component {
                         </div>
                     </div>
                     <div className={'rating-holder'}>
-                        <Rating readOnly={true} size={'medium'} name='rating' value={rating} precision={0.5}/>
+                        <Rating readOnly={true} size={'medium'} name='rating' value={Number(rating)} precision={0.5}/>
                     </div>
+                    { canOpenModal && <div className={'review-totals'}>Total Reviews: {total}</div>}
                 </div>
             </li>
         );
@@ -53,12 +63,14 @@ class ReviewListItem extends Component {
 }
 
 ReviewListItem.propTypes = {
+    openModal: PropTypes.func,
     index: PropTypes.number,
     reviewObj: PropTypes.object,
-    price: PropTypes.number,
-    quality: PropTypes.number,
-    speed: PropTypes.number,
-    rating: PropTypes.number
+    price: PropTypes.string,
+    quality: PropTypes.string,
+    speed: PropTypes.string,
+    total: PropTypes.number,
+    rating: PropTypes.string
 };
 
 export default ReviewListItem;

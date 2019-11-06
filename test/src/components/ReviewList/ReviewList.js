@@ -42,6 +42,8 @@ class ReviewList extends Component {
                 quality={quality}
                 speed={speed}
                 rating={rating}
+                openModal={this.props.openModal}
+                total={reviewObj.total}
             ></ReviewListItem>
         );
     };
@@ -93,7 +95,8 @@ class ReviewList extends Component {
 
 ReviewList.propTypes = {
     data: PropTypes.array,
-    type: PropTypes.string
+    type: PropTypes.string,
+    openModal: PropTypes.func.isRequired
 };
 
 ReviewList.defaultProps = {

@@ -15,6 +15,8 @@ import {
 
 import _ from 'lodash';
 
+import apiHelper from '../api/apiHelper';
+
 const initialState = {
     authenticated: true,
     isEditor: true,
@@ -30,49 +32,51 @@ export default function dataReducer (state = initialState, action) {
             return newState;
         case FETCH_DATA_RECEIVED:
             let newData = [];
-            console.log('fetch DATA!!:', action);
             if (_.isEmpty(action.userId)) {
-                console.log('i have no id, filter data');
                 let reviews = action.response.data.reviews;
                 let lastName = '';
-                console.log('** lastName:', lastName);
                 reviews.map((value) => {
-                    console.log('value.restaurant_name:', value.restaurant_name);
                     if (_.isEmpty(lastName)) lastName = value.restaurant_name;
                     if (!_.isEqual(lastName, value.restaurant_name)) lastName = value.restaurant_name;
-                    console.log('lastName:',lastName);
-                    let hasIt = newData.some(e => e.restaurant_name === lastName)
-                    console.log('hasIt:',hasIt);
-                    if (!hasIt){
+                    let hasIt = newData.some(e => e.restaurant_name === lastName);
+                    if (!hasIt) {
                         newData.push(
                             {
                                 restaurant_name: value.restaurant_name,
                                 rank: value.rank,
                                 total: 1
                             }
-                        )
+                        );
                     } else {
-                        let thisIndex = newData.findIndex(x=>x.restaurant_name === value.restaurant_name);
-                        console.log('thisItem:',thisIndex);
+                        let thisIndex = newData.findIndex(x => x.restaurant_name === value.restaurant_name);
                         let thisItem = newData[thisIndex];
                         thisItem.rank = {
                             price: thisItem.rank.price + value.rank.price,
                             speed: thisItem.rank.speed + value.rank.speed,
                             quality: thisItem.rank.quality + value.rank.quality,
-                            rating: thisItem.rank.rating + value.rank.rating,
-                        }
+                            rating: thisItem.rank.rating + value.rank.rating
+                        };
                         thisItem.total = thisItem.total + 1;
                     }
                     return value;
                 });
-                console.log('final value:', newData);
-                newData.map((value)=>{
-                    console.log('value.total:',value.total);
-                    value.rank.price = value.rank.price / value.total;
-                   value.rank.quality = value.rank.quality / value.total;
-                   value.rank.speed = value.rank.speed / value.total;
-                   value.rank.rating = value.rank.rating / value.total;
+                newData.map((value) => {
+                    value.rank.price = apiHelper.roundRating(value.rank.price / value.total);
+                    value.rank.quality = apiHelper.roundRating(value.rank.quality / value.total);
+                    value.rank.speed = apiHelper.roundRating(value.rank.speed / value.total);
+                    value.rank.rating = apiHelper.roundRating(value.rank.rating / value.total);
+                    // get best
+                    let bestRating = Math.max.apply(Math, reviews.map(function(o) { return Number(o.rank.rating); }));
+                    let bestReviewObj = reviews[reviews.findIndex(x => Number(x.rank.rating) === bestRating)];
+                    value.bestReview = bestReviewObj;
+                    // get worst
+                    let worstRating = Math.min.apply(Math, reviews.map(function(o) { return Number(o.rank.rating); }));
+                    let worstReviewObj = reviews[reviews.findIndex(x => Number(x.rank.rating) === worstRating)];
+                    value.worstReview = worstReviewObj;
+                    return value;
                 });
+
+
             } else {
                 newData = action.response.data.reviews;
             }
@@ -94,20 +98,16 @@ export default function dataReducer (state = initialState, action) {
             newState = Object.assign({}, state, {hasError: true});
             return newState;
         case DELETE_DATA_RECEIVED:
-            console.log('delete data received:', action.response.data);
             newState = Object.assign({}, state, {hasError: false, data: action.response.data.reviews});
             return newState;
         case DELETE_DATA:
             newState = Object.assign({}, state, {hasError: false});
             return newState;
-
         case ADD_DATA_FAILED:
             newState = Object.assign({}, state, {hasError: true});
             return newState;
         case ADD_DATA_RECEIVED:
-            console.log('===> add data received:', action.response.data.reviews);
             newState = Object.assign({}, state, {hasError: false, data: action.response.data.reviews});
-            console.log('newState:', newState);
             return newState;
         case ADD_DATA:
             newState = Object.assign({}, state, {hasError: false});

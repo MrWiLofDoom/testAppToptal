@@ -28,6 +28,7 @@ import ReviewList from './components/ReviewList/ReviewList';
 import AddNew from './components/AddNew/AddNew';
 import LoginForm from './components/LoginForm/LoginForm';
 import MainMenu from './components/MainMenu/MainMenu';
+import MainModal from './components/MainModal/MainModal';
 
 import './App.css';
 
@@ -49,7 +50,9 @@ class App extends Component {
             isLoggedIn: false,
             showLogin: true,
             listName: ALL_RESTAURANTS,
-            email: null
+            email: null,
+            modalOpen: false,
+            modalData: null
         }
     }
 
@@ -66,7 +69,6 @@ class App extends Component {
     }
 
     shouldComponentUpdate (nextProps, nextState, nextContext) {
-        console.log('shouldComponentUpdate')
         if(!_.isEqual(this.props.DataStore, nextProps.DataStore)){
             this.setState({
                 data: nextProps.DataStore.data,
@@ -74,9 +76,7 @@ class App extends Component {
             });
         }
         if(!_.isEqual(this.props.UserStore, nextProps.UserStore)){
-            console.log('user store!!!!!');
             const isNowLoggedIn = nextProps.UserStore.isLoggedIn;
-            console.log('nextProps.UserStore.isLoggedIn:',isNowLoggedIn);
             this.setState({isLoggedIn: isNowLoggedIn},()=>{
                 if(isNowLoggedIn) {
                     // copy userId to local storage
@@ -84,7 +84,6 @@ class App extends Component {
                     // get data
                     this.getDataFromDb();
                 } else {
-                    console.log('change back to login:',nextProps.email);
                     this.setState({email: nextProps.email},()=>{
                         this.changeLogin(true);
                     });
@@ -108,11 +107,8 @@ class App extends Component {
     }
 
     getDataFromDb = () => {
-        console.log('===> getDataFromDb');
-        console.log('this.state.listName:',this.state.listName);
         if (this.state.listName === MY_REVIEWS){
             this.setState({listName: MY_REVIEWS},()=>{
-                console.log('localStorage.getItem(\'userId\'):',localStorage.getItem('userId'));
                 this.props.actions.fetchData(localStorage.getItem('userId'));
             });
         } else {
@@ -123,7 +119,6 @@ class App extends Component {
     };
 
     addToDB = (name, review, rank) => {
-        console.log('addToDB');
         let currentIds = this.state.data.map((data) => data.id);
         let idToBeAdded = 0;
         let userId = localStorage.getItem('userId');
@@ -142,17 +137,13 @@ class App extends Component {
     };
 
     deleteFromDB = (id) => {
-        console.log('deleteFromDb id:',id);
         id = parseInt(id);
         let objIdToDelete = null;
-        console.log('this.state.data:',this.state.data);
         this.state.data.forEach((review) => {
-            console.log('review.id:',review.id);
             if (parseInt(review.id) === id) {
                 objIdToDelete = review._id;
             }
         });
-        console.log('objIdToDelete:',objIdToDelete);
         //
         this.props.actions.deleteData(objIdToDelete);
 
@@ -205,9 +196,32 @@ class App extends Component {
         this.props.actions.loginUser(email,password);
     }
 
+    openModal = (data) => {
+        console.log('--> openModal:',data);
+        this.setState({
+            modalOpen: true,
+            modalData: data
+        });
+    }
+
+    closeModal = () => {
+        console.log('I am closeModal');
+        this.setState({modalOpen: false, modalData: null});
+    }
+
     registerUser = (name,email,password,password2) => {
         console.log('registerUser:',name,email,password,password2);
         this.props.actions.registerUser(name, email, password, password2);
+    }
+    
+    renderModal = () => {
+        console.log('renderModal');
+        const {modalOpen, modalData} = this.state;
+        return (<MainModal
+            handleClose={this.closeModal}
+            open={modalOpen}
+            data={modalData}
+        ></MainModal>);
     }
 
     renderAddNew = () => {
@@ -222,7 +236,12 @@ class App extends Component {
 
     renderReviewList = () => {
         const { data, listName } = this.state;
-        return (<ReviewList type={listName} data={data}></ReviewList>);
+        return (<ReviewList
+            type={listName}
+            data={data}
+            openModal={this.openModal}
+        >
+        </ReviewList>);
     }
 
     renderLogin = () => {
@@ -262,6 +281,7 @@ class App extends Component {
                                 { !isLoggedIn && this.renderLogin()}
                                 { isLoggedIn && showAddNew && this.renderAddNew() }
                                 { isLoggedIn && showReviewList && this.renderReviewList() }
+                                { this.renderModal() }
                             </Paper>
                         </Grid>
                     </Grid>

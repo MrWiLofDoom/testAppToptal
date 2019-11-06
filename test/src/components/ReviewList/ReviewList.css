@@ -49,6 +49,10 @@
     border-radius: 10px;
 }
 
+.review-item.show-pointer{
+    cursor: pointer;
+}
+
 .review-item:last-child {
     margin-bottom: 0;
 }
@@ -97,6 +101,12 @@
     display: flex;
     flex-direction: row;
     padding-bottom: 10px
+}
+
+.review-container .review-totals {
+    color: blue;
+    font-size: 12px;
+    text-align: right;
 }
 
 .review-container .review-icon-holder {

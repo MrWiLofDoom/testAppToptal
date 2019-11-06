@@ -1,0 +1,67 @@
+#main-modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#main-modal #modal-container {
+    background: white;
+    border-radius: 10px;
+    height: auto;
+    width: 400px;
+    padding: 20px;
+}
+
+#main-modal #modal-container:focus { outline:none !important }
+
+#main-modal #modal-container #modal-container-meta {
+    padding-bottom: 20px;
+}
+
+#main-modal #modal-container #modal-container-meta #modal-rating{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+#main-modal #modal-container #modal-container-holder {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    width: auto;
+}
+
+#main-modal #modal-container #modal-container-holder #modal-container-ratings{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+#main-modal #modal-container #modal-container-holder #modal-container-ratings .rating-header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+#main-modal #modal-container #modal-container-holder #modal-container-ratings #modal-container-best-rating,
+#main-modal #modal-container #modal-container-holder #modal-container-ratings #modal-container-worst-rating {
+    width: 40%;
+    height: auto;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 10px;
+}
+
+#main-modal #modal-container #modal-container-holder #modal-container-ratings #modal-container-best-rating {
+    background: #d4fc9f;
+    color: darkgreen;
+}
+
+#main-modal #modal-container #modal-container-holder #modal-container-ratings #modal-container-worst-rating {
+    background: #ff969c;
+    color: darkred;
+}

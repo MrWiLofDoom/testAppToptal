@@ -1,17 +1,12 @@
-// import { default as axios } from '../api/axios-api';
 import axios from 'axios';
 import api from '../config/config.js';
 
 const apiHelper = {
     fetchDataApi: (data) => {
-        console.log('^^^^^^^^^^^^^^^^^^^^^^^^^');
-        console.log('fetchDataApi:',data);
         let url = api.api_path + api.data_path;
         if(data && data.userId){
             url += '/user/' + data.userId;
         }
-        console.log('url:',url);
-
         return axios({
             method: 'get',
             url: url,
@@ -41,6 +36,9 @@ const apiHelper = {
         console.log('registerUser data:',data);
         const url = api.api_path + api.register_path;
         return axios.post(url, {name: data.name, email: data.email, password: data.password, password2: data.password2});
+    },
+    roundRating: (rating) => {
+        return (Math.round(rating * 2) / 2).toFixed(1);
     }
 };
 
