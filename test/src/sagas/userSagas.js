@@ -12,7 +12,6 @@ import {
 
 function* loginUser(action){
     try {
-        console.log('*loginUser:',action);
         const response = yield call(apiHelper.loginUser, action);
         yield put({ type: LOGIN_USER_RECEIVED, response });
     }
@@ -22,7 +21,6 @@ function* loginUser(action){
 }
 
 function* registerUser(action){
-    console.log('*registerUser:',action);
     try {
         const response = yield call(apiHelper.registerUser, action);
         yield put({ type: REGISTER_USER_RECEIVED, response });

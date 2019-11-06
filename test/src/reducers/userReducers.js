@@ -41,7 +41,6 @@ export default function userReducer (state = initialState, action){
             return newState;
         case REGISTER_USER_RECEIVED:
             let registerResponse = action.response.data;
-            console.log('registerResponse:',registerResponse);
             let newRegisterData = {
                 hasError: false,
                 isLoggedIn: false,

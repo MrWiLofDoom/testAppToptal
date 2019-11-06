@@ -40,17 +40,16 @@ class LoginForm extends Component {
         event.preventDefault();
         const { name, email, password, password2 } = this.state;
         if(_.isEmpty(name) || _.isEmpty(email) || _.isEmpty(password) || _.isEmpty(password2)){
-            console.log('one field is blank');
+            console.error('one field is blank');
             return;
         } else if(!_.isEqual(password, password2)){
-            console.log('passwords need to match');
+            console.error('passwords need to match');
         } else {
             this.props.registerUser(name,email,password,password2);
         }
     };
 
     changeScreen = (bool) => {
-        console.log('registerUser!!');
         this.props.changeLogin(bool);
     };
 
@@ -72,11 +71,13 @@ class LoginForm extends Component {
                         className={'login-textfield'}
                         color={'primary'}
                         label={'Password'}
+                        type='password'
                         onChange={this.handleChangePassword}/>
                     <TextField
                         className={'login-textfield'}
                         color={'primary'}
                         label={'Confirm Password'}
+                        type='password'
                         onChange={this.handleChangePassword2}/>
                     <Button
                         className={'login-submit'}
@@ -106,6 +107,7 @@ class LoginForm extends Component {
                         className={'login-textfield'}
                         color={'primary'}
                         label={'Password'}
+                        type='password'
                         onChange={this.handleChangePassword}/>
                     <Button
                         className={'login-submit'}

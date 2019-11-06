@@ -21,7 +21,6 @@ class ReviewListItem extends Component {
     };
 
     handleEdit = (event) => {
-        console.log('handleEdit');
         event.preventDefault();
         event.stopPropagation();
         const { openEditModal, reviewObj} = this.props;

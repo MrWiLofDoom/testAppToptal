@@ -69,14 +69,12 @@ router.get('/data/user/:user_id', (req, res) => {
 
 // update review
 router.post('/data/user/:user_id/:review_id', (req, res) => {
-    console.log('req.body:',req.body);
     const update = {
         review: req.body.update,
         restaurant_name: req.body.restaurant_name,
         rank: req.body.rank
     };
     const id = req.params.review_id;
-    console.log('$$ id: ',id,'$$$');
     Data.findByIdAndUpdate(id, update, (err) => {
         if (err) return res.status(404).json({success: false, error: err});
         Data.find({user_id: req.params.user_id}, (err, data) => {

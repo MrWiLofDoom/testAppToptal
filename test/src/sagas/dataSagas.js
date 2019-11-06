@@ -30,7 +30,6 @@ function* getData(action){
 }
 
 function* addData(action){
-    console.log('*addData:',action);
     try {
         const response = yield call(apiHelper.addDataApi, action);
         yield put({ type: ADD_DATA_RECEIVED, response });
@@ -42,7 +41,6 @@ function* addData(action){
 
 function* updateData(action){
     try {
-        console.log('****** updateData:',action);
         const response = yield call(apiHelper.updateDataApi, action);
         yield put({ type: UPDATE_DATA_RECEIVED, response });
     }
@@ -52,7 +50,6 @@ function* updateData(action){
 }
 
 function* deleteData(action){
-    console.log('****** deleteData:',action);
     try {
         const response = yield call(apiHelper.deleteDataApi, action);
         yield put({ type: DELETE_DATA_RECEIVED, response });
@@ -62,7 +59,6 @@ function* deleteData(action){
     }
 }
 function* deleteRestaurant(action){
-    console.log('****** deleteRestaurant:',action);
     try {
         const response = yield call(apiHelper.deleteRestaurantApi, action);
         yield put({ type: DELETE_RESTAURANT_RECEIVED, response });

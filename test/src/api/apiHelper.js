@@ -18,9 +18,7 @@ const apiHelper = {
         return axios.put(url, {name: data.name, review: data.review, rank: data.rank});
     },
     updateDataApi: data => {
-        console.log('updateDataApi data:',data);
         const url = api.api_path + api.data_path  + '/user/' + data.userId + '/' + data._id;
-        console.log('url:',url);
         return axios.post(url, {update: data.update, restaurant_name: data.updateTitle, rank: data.rank});
     },
     deleteDataApi: data => {
@@ -33,12 +31,10 @@ const apiHelper = {
         return axios.delete(url);
     },
     loginUser: (data) => {
-        console.log('loginUser data:',data);
         const url = api.api_path + api.login_path;
         return axios.post(url, {email: data.email, password: data.password});
     },
     registerUser: (data) => {
-        console.log('registerUser data:',data);
         const url = api.api_path + api.register_path;
         return axios.post(url, {name: data.name, email: data.email, password: data.password, password2: data.password2});
     },

@@ -34,31 +34,33 @@ import EditModal from './components/EditModal/EditModal';
 
 import './App.css';
 
+const initData = {
+    data: [],
+    id: 0,
+    review: null,
+    reviewTitle: null,
+    idToDelete: null,
+    idToUpdate: null,
+    updateReview: null,
+    updateName: null,
+    showAddNew: true,
+    showReviewList: true,
+    isLoggedIn: false,
+    showLogin: true,
+    listName: ALL_RESTAURANTS,
+    email: null,
+    modalOpen: false,
+    modalData: null,
+    isEditMode: false,
+    editModalData: null,
+    editModalOpen: false
+}
+
 class App extends Component {
 
     constructor () {
         super();
-        this.state = {
-            data: [],
-            id: 0,
-            review: null,
-            reviewTitle: null,
-            idToDelete: null,
-            idToUpdate: null,
-            updateReview: null,
-            updateName: null,
-            showAddNew: true,
-            showReviewList: true,
-            isLoggedIn: false,
-            showLogin: true,
-            listName: MY_REVIEWS,
-            email: null,
-            modalOpen: false,
-            modalData: null,
-            isEditMode: false,
-            editModalData: null,
-            editModalOpen: false
-        };
+        this.state = initData;
     }
 
     componentDidMount () {
@@ -104,8 +106,9 @@ class App extends Component {
     }
 
     logout = () => {
-        this.setState({isLoggedIn: false}, () => {
+        this.setState(initData, () => {
             localStorage.setItem('userId', '');
+            localStorage.setItem('isEditMode', '');
         });
     };
 
@@ -147,12 +150,10 @@ class App extends Component {
     };
 
     deleteReview = (id) => {
-        console.log('deleteReview:', id);
         this.props.actions.deleteData(id, localStorage.getItem('userId'));
     };
 
     deleteRestaurantByName = (name) => {
-        console.log('deleteRestaurantByName:', name);
         this.props.actions.deleteRestaurant(name);
     };
 
