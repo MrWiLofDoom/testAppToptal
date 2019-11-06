@@ -10,7 +10,10 @@ import {
     DELETE_DATA,
     ADD_DATA_FAILED,
     ADD_DATA_RECEIVED,
-    ADD_DATA
+    ADD_DATA,
+    DELETE_RESTAURANT_FAILED,
+    DELETE_RESTAURANT_RECEIVED,
+    DELETE_RESTAURANT
 } from '../actions/types';
 
 import _ from 'lodash';
@@ -19,9 +22,10 @@ import apiHelper from '../api/apiHelper';
 
 const initialState = {
     authenticated: true,
-    isEditor: true,
     data: [],
-    hasError: false
+    hasError: false,
+    worstReview: null,
+    bestReview: null
 };
 
 export default function dataReducer (state = initialState, action) {
@@ -32,7 +36,7 @@ export default function dataReducer (state = initialState, action) {
             return newState;
         case FETCH_DATA_RECEIVED:
             let newData = [];
-            if (_.isEmpty(action.userId)) {
+            if (_.isEmpty(action.response.data.userId)) {
                 let reviews = action.response.data.reviews;
                 let lastName = '';
                 reviews.map((value) => {
@@ -75,8 +79,6 @@ export default function dataReducer (state = initialState, action) {
                     value.worstReview = worstReviewObj;
                     return value;
                 });
-
-
             } else {
                 newData = action.response.data.reviews;
             }
@@ -110,6 +112,16 @@ export default function dataReducer (state = initialState, action) {
             newState = Object.assign({}, state, {hasError: false, data: action.response.data.reviews});
             return newState;
         case ADD_DATA:
+            newState = Object.assign({}, state, {hasError: false});
+            return newState;
+
+        case DELETE_RESTAURANT_FAILED:
+            newState = Object.assign({}, state, {hasError: true});
+            return newState;
+        case DELETE_RESTAURANT_RECEIVED:
+            newState = Object.assign({}, state, {hasError: false, data: action.response.data.reviews});
+            return newState;
+        case DELETE_RESTAURANT:
             newState = Object.assign({}, state, {hasError: false});
             return newState;
         default:

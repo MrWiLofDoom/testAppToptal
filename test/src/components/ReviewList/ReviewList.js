@@ -33,17 +33,24 @@ class ReviewList extends Component {
 
     renderContent = (reviewObj, index) => {
         const { price, quality, speed, rating } = reviewObj.rank;
+        const { isEditMode, deleteReview, deleteRestaurant, type, openEditModal } = this.props;
+        const openModalFn = this.props.type !== MY_REVIEWS ? this.props.openModal : null;
         return (
             <ReviewListItem
                 key={'review-list-item-'+index}
                 index={index}
                 reviewObj={reviewObj}
-                price={price}
-                quality={quality}
-                speed={speed}
-                rating={rating}
-                openModal={this.props.openModal}
+                price={String(price)}
+                quality={String(quality)}
+                speed={String(speed)}
+                rating={String(rating)}
+                openModal={openModalFn}
                 total={reviewObj.total}
+                isEditMode={isEditMode}
+                deleteReview={deleteReview}
+                deleteRestaurant={deleteRestaurant}
+                isMyReview={type === MY_REVIEWS}
+                openEditModal={openEditModal}
             ></ReviewListItem>
         );
     };
@@ -96,12 +103,17 @@ class ReviewList extends Component {
 ReviewList.propTypes = {
     data: PropTypes.array,
     type: PropTypes.string,
-    openModal: PropTypes.func.isRequired
+    openModal: PropTypes.func.isRequired,
+    deleteReview: PropTypes.func.isRequired,
+    deleteRestaurant: PropTypes.func.isRequired,
+    openEditModal: PropTypes.func.isRequired,
+    isEditMode: PropTypes.bool
 };
 
 ReviewList.defaultProps = {
     data: [],
-    type: ''
+    type: '',
+    isEditMode: false
 };
 
 export default ReviewList;

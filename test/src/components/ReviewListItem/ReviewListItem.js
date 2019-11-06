@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { AccessAlarm, AttachMoney, Fastfood } from '@material-ui/icons';
+import { AccessAlarm, AttachMoney, Fastfood, Delete, Edit } from '@material-ui/icons';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { Rating } from '@material-ui/lab';
@@ -20,13 +20,41 @@ class ReviewListItem extends Component {
         return color;
     };
 
+    handleEdit = (event) => {
+        console.log('handleEdit');
+        event.preventDefault();
+        event.stopPropagation();
+        const { openEditModal, reviewObj} = this.props;
+        openEditModal(reviewObj);
+    }
+
+    handleDelete = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const {reviewObj, deleteReview, deleteRestaurant, isMyReview} = this.props;
+        if(isMyReview) {
+            deleteReview(reviewObj._id)
+        } else {
+            deleteRestaurant(reviewObj.restaurant_name);
+        }
+    }
+
     handleOpenModal = (object) => {
-        console.log('handleOpenModal:',object);
         this.props.openModal(object);
     }
 
     render () {
-        const {index, reviewObj, price, quality, speed, rating, total} = this.props;
+        const {
+            index,
+            reviewObj,
+            price, quality,
+            speed,
+            rating,
+            total,
+            isEditMode,
+            isMyReview
+        } = this.props;
+
         const canOpenModal = _.isFunction(this.props.openModal);
         const liClassName = 'review-item' + (canOpenModal ? ' show-pointer' : '');
         return (
@@ -57,6 +85,12 @@ class ReviewListItem extends Component {
                     </div>
                     { canOpenModal && <div className={'review-totals'}>Total Reviews: {total}</div>}
                 </div>
+                { isEditMode &&
+                    <div className={'edit-container'}>
+                        <Delete onClick={(e)=>this.handleDelete(e)} />
+                        { isMyReview && <Edit onClick={(e)=>this.handleEdit(e)}/>}
+                    </div>
+                }
             </li>
         );
     }
@@ -70,7 +104,12 @@ ReviewListItem.propTypes = {
     quality: PropTypes.string,
     speed: PropTypes.string,
     total: PropTypes.number,
-    rating: PropTypes.string
+    rating: PropTypes.string,
+    isEditMode: PropTypes.bool,
+    isMyReview: PropTypes.bool,
+    deleteReview: PropTypes.func.isRequired,
+    deleteRestaurant: PropTypes.func.isRequired,
+    openEditModal: PropTypes.func.isRequired
 };
 
 export default ReviewListItem;

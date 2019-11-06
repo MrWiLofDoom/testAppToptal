@@ -9,7 +9,7 @@ import {
 
 const initialState = {
     token: '',
-    isEditor: false,
+    isEditMode: false,
     hasError: false,
     isLoggedIn: false,
     userId: null,
@@ -28,7 +28,7 @@ export default function userReducer (state = initialState, action){
                 hasError: false,
                 isLoggedIn: response.success,
                 token: response.token,
-                isEditor: response.isEditor,
+                isEditMode: response.isEditMode,
                 userId: response.userId
             }
             newState = Object.assign({}, state, newData);
@@ -46,7 +46,7 @@ export default function userReducer (state = initialState, action){
                 hasError: false,
                 isLoggedIn: false,
                 token: null,
-                isEditor: false,
+                isEditMode: false,
                 userId: null,
                 email: registerResponse.email
             }

@@ -2,14 +2,15 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import {AddCircleOutline} from '@material-ui/icons';
+import { AddCircleOutline } from '@material-ui/icons';
 import { Paper, Grid } from '@material-ui/core';
 
 import {
     fetchData,
     deleteData,
     updateData,
-    addData
+    addData,
+    deleteRestaurant
 } from './actions/dataActions';
 
 import {
@@ -29,12 +30,13 @@ import AddNew from './components/AddNew/AddNew';
 import LoginForm from './components/LoginForm/LoginForm';
 import MainMenu from './components/MainMenu/MainMenu';
 import MainModal from './components/MainModal/MainModal';
+import EditModal from './components/EditModal/EditModal';
 
 import './App.css';
 
 class App extends Component {
 
-    constructor(){
+    constructor () {
         super();
         this.state = {
             data: [],
@@ -49,42 +51,50 @@ class App extends Component {
             showReviewList: true,
             isLoggedIn: false,
             showLogin: true,
-            listName: ALL_RESTAURANTS,
+            listName: MY_REVIEWS,
             email: null,
             modalOpen: false,
-            modalData: null
-        }
+            modalData: null,
+            isEditMode: false,
+            editModalData: null,
+            editModalOpen: false
+        };
     }
 
-    componentDidMount() {
-        if(!_.isEmpty(localStorage.getItem('userId'))){
-            this.setState({isLoggedIn:true},()=>{
+    componentDidMount () {
+        if (!_.isEmpty(localStorage.getItem('userId'))) {
+            this.setState({isLoggedIn: true}, () => {
                 this.getDataFromDb();
             });
         }
-    }
 
-    componentWillUnmount() {
-
+        if (!_.isEmpty(localStorage.getItem('isEditMode'))) {
+            let isEditMode = localStorage.getItem('isEditMode');
+            this.setState({isEditMode: isEditMode === 'true'});
+        }
     }
 
     shouldComponentUpdate (nextProps, nextState, nextContext) {
-        if(!_.isEqual(this.props.DataStore, nextProps.DataStore)){
+        if (!_.isEqual(this.props.DataStore, nextProps.DataStore)) {
             this.setState({
                 data: nextProps.DataStore.data,
                 showAddNew: nextProps.DataStore.data.length === 0
             });
         }
-        if(!_.isEqual(this.props.UserStore, nextProps.UserStore)){
+        if (!_.isEqual(this.props.UserStore, nextProps.UserStore)) {
             const isNowLoggedIn = nextProps.UserStore.isLoggedIn;
-            this.setState({isLoggedIn: isNowLoggedIn},()=>{
-                if(isNowLoggedIn) {
+            this.setState({
+                isLoggedIn: isNowLoggedIn,
+                isEditMode: nextProps.UserStore.isEditMode
+            }, () => {
+                if (isNowLoggedIn) {
                     // copy userId to local storage
                     localStorage.setItem('userId', nextProps.UserStore.userId);
+                    localStorage.setItem('isEditMode', nextProps.UserStore.isEditMode);
                     // get data
                     this.getDataFromDb();
                 } else {
-                    this.setState({email: nextProps.email},()=>{
+                    this.setState({email: nextProps.email}, () => {
                         this.changeLogin(true);
                     });
                 }
@@ -94,25 +104,25 @@ class App extends Component {
     }
 
     logout = () => {
-        this.setState({isLoggedIn: false},()=>{
+        this.setState({isLoggedIn: false}, () => {
             localStorage.setItem('userId', '');
         });
-    }
+    };
 
     setType = (type) => {
-        this.setState({listName:type},()=>{
+        this.setState({listName: type}, () => {
             // get data
             this.getDataFromDb();
         });
-    }
+    };
 
     getDataFromDb = () => {
-        if (this.state.listName === MY_REVIEWS){
-            this.setState({listName: MY_REVIEWS},()=>{
+        if (this.state.listName === MY_REVIEWS) {
+            this.setState({listName: MY_REVIEWS}, () => {
                 this.props.actions.fetchData(localStorage.getItem('userId'));
             });
         } else {
-            this.setState({listName: ALL_RESTAURANTS},()=>{
+            this.setState({listName: ALL_RESTAURANTS}, () => {
                 this.props.actions.fetchData();
             });
         }
@@ -126,103 +136,91 @@ class App extends Component {
             ++idToBeAdded;
         }
 
-        if(review !== '' || review.length > 3) {
+        if (review !== '' || review.length > 3) {
             this.props.actions.addData(name, review, rank, idToBeAdded, userId);
             this.setState({
-                showAddNew:false,
+                showAddNew: false
             });
         } else {
-            console.error('You need to have 3 characters at least in a review.')
+            console.error('You need to have 3 characters at least in a review.');
         }
     };
 
-    deleteFromDB = (id) => {
-        id = parseInt(id);
-        let objIdToDelete = null;
-        this.state.data.forEach((review) => {
-            if (parseInt(review.id) === id) {
-                objIdToDelete = review._id;
-            }
-        });
-        //
-        this.props.actions.deleteData(objIdToDelete);
-
+    deleteReview = (id) => {
+        console.log('deleteReview:', id);
+        this.props.actions.deleteData(id, localStorage.getItem('userId'));
     };
 
-    updateDB = () => {
-        const { updateReview, updateName } = this.state;
-        const updateId = parseInt(this.state.idToUpdate);
-
-        let objIdToUpdate = null;
-        this.state.data.forEach((review) => {
-            if (review.id === updateId) {
-                objIdToUpdate = review._id;
-            }
-        });
-        this.props.actions.updateData(updateReview, updateName, objIdToUpdate, updateId);
+    deleteRestaurantByName = (name) => {
+        console.log('deleteRestaurantByName:', name);
+        this.props.actions.deleteRestaurant(name);
     };
 
-    onChangeDelete =(e)=>{
-        let changeId = e.target.value;
-        this.setState({ idToDelete: changeId });
-    }
-
-    onChangeUpdateId = (e) => {
-        this.setState({ idToUpdate: e.target.value });
-    }
-
-    onChangeUpdateMsg = (e) => {
-        this.setState({ updateReview: e.target.value });
-    }
-
-    onChangeUpdateRestaurant = (e) => {
-        this.setState({ updateName: e.target.value });
-    }
+    editReview = (id, restaurantName, review, rank) => {
+        this.closeEditModal();
+        this.props.actions.updateData(review, restaurantName, id, rank, localStorage.getItem('userId'));
+    };
 
     toggleAddNew = (e) => {
         this.setState({showAddNew: !this.state.showAddNew});
-    }
+    };
 
     cancelAddNew = (e) => {
         this.setState({showAddNew: false});
-    }
+    };
 
     changeLogin = (bool) => {
-        this.setState({showLogin: bool})
-    }
+        this.setState({showLogin: bool});
+    };
 
-    loginUser = (email,password) => {
-        console.log('loginUser:',email,password);
-        this.props.actions.loginUser(email,password);
-    }
+    loginUser = (email, password) => {
+        this.props.actions.loginUser(email, password);
+    };
 
     openModal = (data) => {
-        console.log('--> openModal:',data);
         this.setState({
             modalOpen: true,
             modalData: data
         });
-    }
+    };
+
+    openEditModal = (data) => {
+        this.setState({
+            editModalOpen: true,
+            editModalData: data
+        });
+    };
 
     closeModal = () => {
-        console.log('I am closeModal');
         this.setState({modalOpen: false, modalData: null});
-    }
+    };
 
-    registerUser = (name,email,password,password2) => {
-        console.log('registerUser:',name,email,password,password2);
+    closeEditModal = () => {
+        this.setState({editModalOpen: false, editModalData: null});
+    };
+
+    registerUser = (name, email, password, password2) => {
         this.props.actions.registerUser(name, email, password, password2);
-    }
-    
+    };
+
     renderModal = () => {
-        console.log('renderModal');
         const {modalOpen, modalData} = this.state;
         return (<MainModal
             handleClose={this.closeModal}
             open={modalOpen}
             data={modalData}
         ></MainModal>);
-    }
+    };
+
+    renderEditModal = () => {
+        const {editModalOpen, editModalData} = this.state;
+        return (<EditModal
+            handleClose={this.closeEditModal}
+            open={editModalOpen}
+            data={editModalData}
+            submit={this.editReview}
+        ></EditModal>);
+    };
 
     renderAddNew = () => {
         return (
@@ -231,21 +229,25 @@ class App extends Component {
                 cancel={this.cancelAddNew}
             >
             </AddNew>
-        )
-    }
+        );
+    };
 
     renderReviewList = () => {
-        const { data, listName } = this.state;
+        const {data, listName, isEditMode} = this.state;
         return (<ReviewList
             type={listName}
             data={data}
             openModal={this.openModal}
+            openEditModal={this.openEditModal}
+            isEditMode={isEditMode}
+            deleteReview={this.deleteReview}
+            deleteRestaurant={this.deleteRestaurantByName}
         >
         </ReviewList>);
-    }
+    };
 
     renderLogin = () => {
-        const { showLogin, email } = this.state;
+        const {showLogin, email} = this.state;
         return (<LoginForm
             loginUser={this.loginUser}
             registerUser={this.registerUser}
@@ -253,35 +255,37 @@ class App extends Component {
             showLogin={showLogin}
             email={email}
         ></LoginForm>);
-    }
+    };
 
-    render() {
-        const { showAddNew, showReviewList, isLoggedIn } = this.state;
+    render () {
+        const {showAddNew, showReviewList, isLoggedIn, isEditMode} = this.state;
         return (
             <div className='App'>
                 <header className='App-header'>
                     <Grid className={'main-grid'} container spacing={0}>
                         <Grid className={'main-grid-container'} item xs={8} sm={8} md={8} lg={8}>
-                            <Paper square={true} className="edit-video-left-tab" elevation={0}>
+                            <Paper square={true} className='edit-video-left-tab' elevation={0}>
                                 <h1>Welcome to Restaurant-O!</h1>
-                                { isLoggedIn && !showAddNew &&
-                                    <div id={'add-review-container'}>
-                                        <div id={'main-menu-holder'}>
-                                            <MainMenu
-                                                logout={this.logout}
-                                                setType={this.setType}
-                                            ></MainMenu>
-                                        </div>
-                                        <div id={'add-review-holder'}>
-                                            <div>Add a New Review</div>
-                                            <AddCircleOutline onClick={ (e) => this.toggleAddNew(e) } />
-                                        </div>
+                                {isEditMode && <h4>EDIT MODE</h4>}
+                                {isLoggedIn && !showAddNew &&
+                                <div id={'add-review-container'}>
+                                    <div id={'main-menu-holder'}>
+                                        <MainMenu
+                                            logout={this.logout}
+                                            setType={this.setType}
+                                        ></MainMenu>
                                     </div>
+                                    <div id={'add-review-holder'}>
+                                        <div>Add a New Review</div>
+                                        <AddCircleOutline onClick={(e) => this.toggleAddNew(e)}/>
+                                    </div>
+                                </div>
                                 }
-                                { !isLoggedIn && this.renderLogin()}
-                                { isLoggedIn && showAddNew && this.renderAddNew() }
-                                { isLoggedIn && showReviewList && this.renderReviewList() }
-                                { this.renderModal() }
+                                {!isLoggedIn && this.renderLogin()}
+                                {isLoggedIn && showAddNew && this.renderAddNew()}
+                                {isLoggedIn && showReviewList && this.renderReviewList()}
+                                {this.renderModal()}
+                                {this.renderEditModal()}
                             </Paper>
                         </Grid>
                     </Grid>
@@ -306,7 +310,8 @@ function mapDispatchToProps (dispatch) {
             deleteData,
             addData,
             loginUser,
-            registerUser
+            registerUser,
+            deleteRestaurant
         }, dispatch)
     };
 }

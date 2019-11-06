@@ -13,7 +13,10 @@ import {
     DELETE_DATA,
     ADD_DATA_FAILED,
     ADD_DATA_RECEIVED,
-    ADD_DATA
+    ADD_DATA,
+    DELETE_RESTAURANT_FAILED,
+    DELETE_RESTAURANT_RECEIVED,
+    DELETE_RESTAURANT
 } from '../actions/types';
 
 function* getData(action){
@@ -58,6 +61,16 @@ function* deleteData(action){
         yield put({ type: DELETE_DATA_FAILED, error });
     }
 }
+function* deleteRestaurant(action){
+    console.log('****** deleteRestaurant:',action);
+    try {
+        const response = yield call(apiHelper.deleteRestaurantApi, action);
+        yield put({ type: DELETE_RESTAURANT_RECEIVED, response });
+    }
+    catch (error) {
+        yield put({ type: DELETE_RESTAURANT_FAILED, error });
+    }
+}
 
 export function* watchFetchData() {
     yield takeLatest(FETCH_DATA, getData);
@@ -73,4 +86,8 @@ export function* watchAddData(){
 
 export function* watchDeleteData(){
     yield takeLatest(DELETE_DATA, deleteData);
+}
+
+export function* watchDeleteRestaurant(){
+    yield takeLatest(DELETE_RESTAURANT, deleteRestaurant);
 }

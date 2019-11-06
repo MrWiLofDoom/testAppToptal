@@ -20,12 +20,17 @@ const apiHelper = {
     updateDataApi: data => {
         console.log('updateDataApi data:',data);
         const url = api.api_path + api.data_path  + '/user/' + data.userId + '/' + data._id;
-        return axios.post(url, {review: data, id: data.id, restaurant_name: data.updateTitle});
+        console.log('url:',url);
+        return axios.post(url, {update: data.update, restaurant_name: data.updateTitle, rank: data.rank});
     },
     deleteDataApi: data => {
         const { payload } = data;
-        const url = api.api_path + api.data_path + '/user/' + data.userId +  '/' + payload;
+        const url = api.api_path + api.data_path + '/user/' + data.userId +  '/' + data.id;
         return axios.delete(url, payload);
+    },
+    deleteRestaurantApi: data => {
+        const url = api.api_path + api.restaurant_path + '/' + data.name;
+        return axios.delete(url);
     },
     loginUser: (data) => {
         console.log('loginUser data:',data);

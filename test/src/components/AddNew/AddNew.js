@@ -19,7 +19,6 @@ class AddNew extends Component {
         };
     }
 
-
     onChangeReview = (e) => {
         let review = e.target.value;
         if (review.length > 3) {
@@ -54,49 +53,6 @@ class AddNew extends Component {
     cancel = (e) => {
         this.props.cancel()
     }
-
-    renderContent = () => {
-        return (
-            <>
-
-                {/*<div>*/}
-                {/*    <input*/}
-                {/*        type='text'*/}
-                {/*        onChange={(e) => this.onChangeDelete(e)}*/}
-                {/*        placeholder='put id of item to delete here'*/}
-                {/*    />*/}
-                {/*    <Button variant='contained' color='primary'*/}
-                {/*            onClick={() => this.deleteFromDB(this.state.idToDelete)}>*/}
-                {/*        DELETE*/}
-                {/*    </Button>*/}
-                {/*</div>*/}
-                {/*<div>*/}
-                {/*    <input*/}
-                {/*        type='text'*/}
-                {/*        onChange={(e) => this.onChangeUpdateId(e)}*/}
-                {/*        placeholder='id of item to update here'*/}
-                {/*    />*/}
-                {/*    <input*/}
-                {/*        type='text'*/}
-                {/*        onChange={(e) => this.onChangeUpdateRestaurant(e)}*/}
-                {/*        placeholder='put new value of restaurant name here'*/}
-                {/*    />*/}
-                {/*    <input*/}
-                {/*        type='text'*/}
-                {/*        onChange={(e) => this.onChangeUpdateMsg(e)}*/}
-                {/*        placeholder='put new value of the item here'*/}
-                {/*    />*/}
-                {/*    <Button variant='contained' color='primary'*/}
-                {/*            onClick={() =>*/}
-                {/*                this.updateDB()*/}
-                {/*            }*/}
-                {/*    >*/}
-                {/*        UPDATE*/}
-                {/*    </Button>*/}
-                {/*</div>*/}
-            </>
-        );
-    };
 
     render () {
         const {price, quality, speed} = this.state;

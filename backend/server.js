@@ -52,11 +52,8 @@ app.use(passport.initialize());
 // Passport config
 require("./config/passport")(passport);
 
-// get all  reviews
+// get all reviews
 router.get('/data/', (req, res) => {
-
-    console.log('db.collections.datas.names:',);
-
     Data.find((err, data) => {
         if (err) return res.status(404).json({success: false, error: err});
         return res.json({success: true, reviews: data});
@@ -66,24 +63,25 @@ router.get('/data/', (req, res) => {
 router.get('/data/user/:user_id', (req, res) => {
     Data.find({user_id: req.params.user_id},(err, data) => {
         if (err) return res.status(404).json({success: false, error: err});
-        return res.json({success: true, reviews: data});
+        return res.json({success: true, reviews: data, userId:req.params.user_id});
     });
 });
 
 // update review
 router.post('/data/user/:user_id/:review_id', (req, res) => {
+    console.log('req.body:',req.body);
     const update = {
-        id: req.body.review.id,
-        review: req.body.review.update,
+        review: req.body.update,
         restaurant_name: req.body.restaurant_name,
         rank: req.body.rank
     };
     const id = req.params.review_id;
+    console.log('$$ id: ',id,'$$$');
     Data.findByIdAndUpdate(id, update, (err) => {
         if (err) return res.status(404).json({success: false, error: err});
-        Data.find((err, data) => {
+        Data.find({user_id: req.params.user_id}, (err, data) => {
             if (err) return res.status(404).json({success: false, error: err});
-            return res.json({success: true, reviews: data});
+            return res.json({success: true, reviews: data, userId: req.params.user_id});
         });
     });
 });
@@ -92,7 +90,6 @@ router.post('/data/user/:user_id/:review_id', (req, res) => {
 router.put('/data/user/:user_id/:review_id', (req, res) => {
     const id = req.params.review_id;
     let data = new Data();
-    console.log('req.body:', req.body);
     const {review, name, rank} = req.body;
     if ((!id && id !== 0) || !review) {
         return res.status(404).json({
@@ -108,34 +105,40 @@ router.put('/data/user/:user_id/:review_id', (req, res) => {
     // save new entry
     data.save((err) => {
         if (err) return res.status(404).json({message: 'Review Not found', success: false, error: err});
-        Data.find((err, data) => {
+        Data.find({user_id: req.params.user_id},(err, data) => {
             if (err) return res.status(404).json({message: 'Reviews Not found', success: false, error: err});
-            return res.json({success: true, reviews: data});
+            return res.json({success: true, reviews: data, userId: req.params.user_id});
         });
     });
 });
 
 // delete review
-router.delete('/data/:review_id', (req, res) => {
+router.delete('/data/user/:user_id/:review_id', (req, res) => {
     const id = req.params.review_id;
     Data.findByIdAndRemove(id, (err) => {
         if (err) return res.status(404).json({errors: {message: 'Review Not found'}, success: false});
-        Data.find((err, data) => {
+        Data.find({user_id: req.params.user_id},(err, data) => {
             if (err) return res.status(404).json({errors: {message: 'Reviews Not found'}, success: false, error: err});
-            return res.json({success: true, reviews: data});
+            return res.json({success: true, reviews: data, userId: req.params.user_id});
         });
     });
+});
+
+
+// delete restaurant
+router.delete('/restaurant/:name', (req, res) => {
+    const name = req.params.name;
+    db.collections.datas.deleteMany( {"restaurant_name" : name},(data)=>{
+        Data.find((err, data) => {
+            if (err) return res.status(404).json({success: false, error: err});
+            return res.json({success: true, reviews: data});
+        });
+    })
 });
 
 // REGISTER
 
 router.post('/users/register', (req, res) => {
-
-    console.log('*********************');
-    console.log('   register users');
-    console.log('   req.body:',req.body);
-    console.log('*********************');
-
     // Form validation
     const {errors, isValid} = validateRegisterInput(req.body);
     // Check validation
@@ -202,7 +205,7 @@ router.post('/users/login', (req, res) => {
                         res.json({
                             success: true,
                             token: 'Bearer ' + token,
-                            isEditor: user.admin,
+                            isEditMode: user.admin,
                             userId: user.id
                         });
                     }
